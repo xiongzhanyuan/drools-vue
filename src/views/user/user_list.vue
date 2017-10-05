@@ -299,6 +299,16 @@ export default {
             message: '已取消删除'
           });          
         });
+      },
+      test(var1, var2) {
+        var b = true;
+        var str = var2.split("*");
+        str.forEach((v,i) => {
+            if (v !== "" && var1.search(v) != var2.search(v)) {
+                b = false;
+                alert(b);
+            }
+        })
       }
   }
 }

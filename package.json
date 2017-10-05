@@ -13,13 +13,14 @@
   "dependencies": {
     "axios": "0.16.2",
     "element-ui": "1.4.3",
+    "jquery": "^3.2.1",
     "js-cookie": "2.1.4",
+    "md5": "^2.2.1",
     "normalize.css": "7.0.0",
     "nprogress": "0.2.0",
     "vue": "2.4.2",
     "vue-router": "2.7.0",
-    "vuex": "2.3.1",
-    "md5": "^2.2.1"
+    "vuex": "2.3.1"
   },
   "devDependencies": {
     "autoprefixer": "6.7.2",

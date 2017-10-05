@@ -17,6 +17,26 @@ const Err404 = _import('404')
 
 /* demo */
 const UploadImage = _import('common/uploadImage')
+const UploadImageMulti = _import('common/uploadImageMulti')
+const UploadVideo = _import('common/uploadVideo')
+const UploadAudio = _import('common/uploadAudio')
+const Table = _import('common/table')
+const UploadImageBig = _import('common/uploadImageBig')
+const UploadAll = _import('common/uploadAll')
+const Tinymce = _import('tmscq/tmsActivityNew')
+
+/* homePage */
+const HomePage = _import('home/homePage')
+
+/* tmscq */
+const TmsContent = _import('tmscq/tmsContent')
+const TmsActivity = _import('tmscq/tmsActivityNew')
+
+/* scenicSpot */
+const ScenicSpot = _import('scenic/scenicSpot')
+
+/* customNotice */
+const CustomNotice = _import('notice/customNotice')
 
 /* user page */
 const UserList = _import('user/user_list')
@@ -62,13 +82,59 @@ export const asyncRouterMap = [
   },
 
   {
+    path: '/homePage',
+    component: Layout,
+    redirect: '/homePage/index',
+    icon: 'tubiao',
+    noDropdown: true,
+    children: [{ path: 'homePage', name: '首页功能管理', component: HomePage}]
+  },
+
+  {
+    path: '/scenicSpot',
+    component: Layout,
+    redirect: '/scenicSpot/index',
+    icon: 'tab',
+    noDropdown: true,
+    children: [{ path: 'scenicSpot', name: '景区管理', component: ScenicSpot}]
+  },
+
+  {
+    path: '/customNotice',
+    component: Layout,
+    redirect: '/customNotice/index',
+    icon: 'theme',
+    noDropdown: true,
+    children: [{ path: 'customNotice', name: '游客须知', component: CustomNotice}]
+  },
+
+  {
+    path: '/tms',
+    component: Layout,
+    redirect: 'noredirect',
+    name: '天门山传奇',
+    icon: 'table',
+    children: [
+      { path: 'tmsContent', component: TmsContent, name: '内容', icon: 'zonghe' },
+      { path: 'tmsActivity', component: TmsActivity, name: '活动', icon: 'zonghe' }
+      
+    ]
+  },
+
+  {
     path: '/example',
     component: Layout,
     redirect: 'noredirect',
     name: '组件',
     icon: 'tubiao',
     children: [
-      { path: 'uploadImage', component: UploadImage, name: '上传图片'}
+      { path: 'uploadImageMulti', component: UploadImageMulti, name: '批量上传'},
+      { path: 'uploadVideo', component: UploadVideo, name: '视频上传'},
+      { path: 'uploadAudio', component: UploadAudio, name: '音频上传'},
+      { path: 'table', component: Table, name: '表格'},
+      { path: 'uploadImage', component: UploadImage, name: '图片上传'},
+      // { path: 'uploadAll', component: UploadAll, name: '都能上传'},
+      // { path: 'tinymce', component: Tinymce, name: '富文本'}
     ]
   },
 
