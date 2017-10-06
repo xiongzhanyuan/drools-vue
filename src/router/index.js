@@ -38,6 +38,9 @@ const ScenicSpot = _import('scenic/scenicSpot')
 /* customNotice */
 const CustomNotice = _import('notice/customNotice')
 
+/* feedBack */
+const FeedBack = _import('feedBack/feedBack')
+
 /* user page */
 const UserList = _import('user/user_list')
 
@@ -106,6 +109,15 @@ export const asyncRouterMap = [
     icon: 'theme',
     noDropdown: true,
     children: [{ path: 'customNotice', name: '游客须知', component: CustomNotice}]
+  },
+
+  {
+    path: '/feedBack',
+    component: Layout,
+    redirect: '/feedBack/index',
+    icon: 'mima',
+    noDropdown: true,
+    children: [{ path: 'feedBack', name: '用户反馈', component: FeedBack}]
   },
 
   {
