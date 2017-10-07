@@ -4,9 +4,9 @@
 
       <div class="sub-navbar">
         <template>
-          <el-button v-loading="loading" style="margin-left: 10px;" type="success" @click="submitForm()">发布
+          <el-button v-loading="loading" style="margin-left: 10px;" type="success" @click="submitForm()">确定修改
           </el-button>
-          <el-button v-loading="loading" type="warning">预览</el-button>
+          <!-- <el-button v-loading="loading" type="warning">预览</el-button> -->
         </template>
       </div>
 
@@ -40,9 +40,9 @@
         </el-row>
 
         <!-- <el-form-item style="margin-bottom: 40px;" label-width="45px" label="摘要:">
-          <el-input type="textarea" class="article-textarea" :rows="1" autosize placeholder="请输入摘要" v-model="postForm.subject">
-          </el-input>
-        </el-form-item> -->
+            <el-input type="textarea" class="article-textarea" :rows="1" autosize placeholder="请输入摘要" v-model="postForm.subject">
+            </el-input>
+          </el-form-item> -->
 
         <div class="editor-container">
           <tinymce :height=400 ref="editor" v-model="postForm.content"></tinymce>
@@ -65,7 +65,6 @@ export default {
   components: { Tinymce, MDinput, Sticky },
   data() {
     const validateRequire = (rule, value, callback) => {
-      debugger
       if (value === '') {
         this.$message({
           message: rule.field + '为必传项',
@@ -79,6 +78,7 @@ export default {
 
     return {
       postForm: {
+        id: '',
         name: '',
         startTime: '',
         endTime: '',
@@ -95,7 +95,15 @@ export default {
 
   },
   created() {
+    const id = this.$route.params.id
+    getLegendActivityInfo(id).then(response => {
+      this.postForm = Object.assign(this.postForm, response)
+    })
 
+  },
+  watch: {
+    // 监测路由变化,只要变化了就调用获取路由参数方法将数据存储本组件即可
+    '$route': 'getParams'
   },
   methods: {
     fetchData() {
@@ -109,13 +117,13 @@ export default {
     submitForm() {
       this.$refs.postForm.validate(valid => {
         if (valid) {
-          addLegendActivityInfo(this.postForm).then(response => {
+          updateLegendActivityInfo(this.postForm).then(response => {
             this.$notify({
               title: '成功',
               message: '添加成功',
               type: 'success',
               duration: 2000
-            }),
+            })
             this.$router.go(-1)
           })
         } else {
@@ -170,6 +178,7 @@ export default {
   }
   .sub-navbar {
     margin-top: 10px;
+    margin-right: 30px;
     text-align: right;
   }
 }

@@ -30,7 +30,9 @@ const HomePage = _import('home/homePage')
 
 /* tmscq */
 const TmsContent = _import('tmscq/tmsContent')
+const TmsActivityList = _import('tmscq/tmsActivityList')
 const TmsActivity = _import('tmscq/tmsActivityNew')
+const TmsActivityEdit = _import('tmscq/tmsActivityNewEdit')
 
 /* scenicSpot */
 const ScenicSpot = _import('scenic/scenicSpot')
@@ -127,9 +129,10 @@ export const asyncRouterMap = [
     name: '天门山传奇',
     icon: 'table',
     children: [
-      { path: 'tmsContent', component: TmsContent, name: '内容', icon: 'zonghe' },
-      { path: 'tmsActivity', component: TmsActivity, name: '活动', icon: 'zonghe' }
-      
+      { path: 'tmsContent', component: TmsContent, name: '内容', icon: 'zonghe' }, 
+      { path: 'tmsActivityList', component: TmsActivityList, name: '活动', icon: 'zonghe' }, 
+      { path: 'tmsActivity', component: TmsActivity, hidden: true }, 
+      { path: 'tmsActivityEdit/:id', component: TmsActivityEdit, hidden: true }
     ]
   },
 

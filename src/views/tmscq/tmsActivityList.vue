@@ -1,11 +1,22 @@
 <template>
   <div class="app-container">
     <div class="filter-container">
-      <el-input @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" placeholder="用户名" v-model="listQuery.userName">
+      <el-input @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" placeholder="标题" v-model="listQuery.name">
       </el-input>
 
+      <span class="demonstration">开始时间</span>
+      <el-date-picker v-model="listQuery.startTime" type="date" placeholder="选择开始时间">
+      </el-date-picker>
+
+      <span class="demonstration">结束时间</span>
+      <el-date-picker v-model="listQuery.endTime" type="date" placeholder="选择结束时间">
+      </el-date-picker>
+
       <el-button class="filter-item" type="primary" icon="search" @click="handleFilter">搜索</el-button>
-      <el-button class="filter-item" style="margin-left: 10px;" @click="handleCreate" type="primary" icon="edit">添加</el-button>
+      <router-link :to="'/tms/tmsActivity'">
+        <el-button class="filter-item" style="margin-left: 10px;" type="primary" icon="edit">添加</el-button>
+
+      </router-link>
     </div>
 
     <el-table class="tms-table" :key='tableKey' :data="list" v-loading="listLoading" element-loading-text="给我一点时间" border fit highlight-current-row>
@@ -24,22 +35,23 @@
 
       <el-table-column min-width="150px" label="开始时间">
         <template scope="scope">
-          <span>{{scope.row.startDate}}</span>
+          <span>{{scope.row.startTime | formatDate}}</span>
         </template>
       </el-table-column>
 
       <el-table-column min-width="150px" label="结束时间">
         <template scope="scope">
-          <span>{{scope.row.endDate}}</span>
+          <span>{{scope.row.endTime | formatDate}}</span>
         </template>
       </el-table-column>
 
       <el-table-column align="center" label="操作" width="150">
         <template scope="scope">
-          <el-button size="small" type="success" @click="getInfo(scope.row)">修改
-          </el-button>
-          
-          <el-button size="small" type="danger" @click="messageBox(scope.row)">删除
+          <router-link :to="'/tms/tmsActivityEdit/' + scope.row.id">
+            <el-button size="small" type="success" @click="getInfo(scope.row)">修改
+            </el-button>
+          </router-link>
+          <el-button si <el-button size="small" type="danger" @click="messageBox(scope.row)">删除
           </el-button>
         </template>
       </el-table-column>
@@ -47,8 +59,7 @@
     </el-table>
 
     <div v-show="!listLoading" class="pagination-container">
-      <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="listQuery.page.pageNo"
-        :page-sizes="[10,20,30,50]" :page-size="listQuery.page.pageSize" layout="total, sizes, prev, pager, next, jumper" :total="total">
+      <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="listQuery.page.pageNo" :page-sizes="[10,20,30,50]" :page-size="listQuery.page.pageSize" layout="total, sizes, prev, pager, next, jumper" :total="total">
       </el-pagination>
     </div>
 
@@ -56,89 +67,61 @@
 </template>
 
 <style>
-  .tms-table{width: 100%; margin-top: 20px}
+.tms-table {
+  width: 100%;
+  margin-top: 20px
+}
 </style>
 
 
 <script>
-import { getUserList, updateUserInfo, addUserInfo, deleteUserInfo } from '@/api/user'
-import store from '@/store'
-import UploadImage from '@/views/common/uploadImage'
+import { fetchLegendActivityList, getLegendActivityInfo, addLegendActivityInfo, updateLegendActivityInfo, deleteLegendActivityInfo } from '@/api/legend'
+import { formatDate } from '@/utils/date.js';
 
 export default {
-  components: { UploadImage },
-  name: 'userList',
+  name: 'tmsList',
   data() {
-    var validatePass = (rule, value, callback) => {
-        if (value.length < 6) {
-          callback(new Error('密码不能小于6位'))
-        } else {
-          if (this.temp.checkPass !== '') {
-            this.$refs.validateField('checkPass');
-          }
-          callback();
-        }
-      };
-      var validatePass2 = (rule, value, callback) => {
-        if (value === '') {
-          callback(new Error('请再次输入密码'));
-        } else if (value !== this.temp.password) {
-          callback(new Error('两次输入密码不一致!'));
-        } else {
-          callback();
-        }
-      };
     return {
       list: null,
       total: null,
       listLoading: true,
       listQuery: {
-        userName: null, 
-        realName: null, 
+        name: null,
+        startTime: null,
+        endTime: null,
         page: {
           pageNo: 1,
           pageSize: 10
-        },
-        importance: undefined,
-        title: undefined,
-        type: undefined,
-      },
-      temp: {
-        id: undefined,
-        userName: '',
-        password: '',
-        checkPass: '',
-        realName: '',
-        sex: 1,
-        avatar: '',
-        idCard: '',
-        department: '',
-        status: 'published'
+        }
       },
       tableKey: 0,
-      dialogFormVisible: false,
-      dialogStatus: '',
       textMap: {
         update: '编辑',
         create: '创建'
-      },
-      rules2: {
-        password: [
-          { validator: validatePass, trigger: 'blur' }
-        ],
-        checkPass: [
-          { validator: validatePass2, trigger: 'blur' }
-        ]
       }
     }
   },
   created() {
     this.getList()
   },
+  filters: {
+    formatDate(time) {
+      var date = new Date(time);
+      return formatDate(date, 'yyyy-MM-dd');
+    }
+  },
   methods: {
     getList() {
       this.listLoading = true
-      getUserList(this.listQuery).then(response => {
+      const temp = Object.assign({}, this.listQuery)
+      if (temp.startTime) {
+        temp.startTime = this.listQuery.startTime.getTime()
+      }
+
+      if (temp.endTime) {
+        temp.endTime = this.listQuery.endTime.getTime()
+      }
+      fetchLegendActivityList(temp).then(response => {
         this.list = response.list
         this.total = response.totalCount
         this.listLoading = false
@@ -155,102 +138,36 @@ export default {
       this.listQuery.page.pageNo = val
       this.getList()
     },
-    getInfo(row) {
-      this.temp = Object.assign(this.temp, row)
-      this.dialogStatus = 'update'
-      this.dialogFormVisible = true
-    },
-    resetForm(formName) {
-      this.$refs[formName].resetFields();
-    },
-    cancel(formName) {
-      this.resetForm(formName)
-      this.dialogFormVisible = false
-    },
-    handleClose() {
-      this.resetForm('temp')
-      this.dialogFormVisible = false
-    },
-    handleCreate() {
-      this.resetTemp()
-      this.dialogStatus = 'create'
-      this.dialogFormVisible = true
-    },
-    imageUploaded (image) {
-      this.temp.avatar = image.url
-    },
-    create() {
-      addUserInfo(this.temp).then(response => {
-        this.resetForm('temp')
-        this.getList()
-        this.dialogFormVisible = false
-        this.$notify({
-          title: '成功',
-          message: '添加成功',
-          type: 'success',
-          duration: 2000
-        })
-      })
-    },
-    update() {
-
-      updateUserInfo(this.temp).then(response => {
-        this.resetForm('temp')
-        this.getList()
-        this.dialogFormVisible = false
-        this.$notify({
-          title: '成功',
-          message: '更新成功',
-          type: 'success',
-          duration: 2000
-        })
-        store.dispatch('GetInfo')
-      })
-    },
-    resetTemp() {
-      this.temp = {
-        id: undefined,
-        userName: '',
-        password: '',
-        checkPass: '',
-        realName: '',
-        sex: 1,
-        avatar: '',
-        idCard: '',
-        department: '',
-        status: 'published'
-      }
-    },
     messageBox(row) {
-        this.$confirm('此操作将永久删除该用户, 是否继续?', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }).then(() => {
-          deleteUserInfo({"id": row.id, "flagDelete": 1}).then(response => {
+      this.$confirm('此操作将永久删除该条记录, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        deleteLegendActivityInfo({ "id": row.id, "flagDelete": 1 }).then(response => {
           this.$message({
-              type: 'success',
-              message: '删除成功!'
-            });
+            type: 'success',
+            message: '删除成功!'
+          });
           this.getList()
-          })
-        }).catch(() => {
-          this.$message({
-            type: 'info',
-            message: '已取消删除'
-          });          
-        });
-      },
-      test(var1, var2) {
-        var b = true;
-        var str = var2.split("*");
-        str.forEach((v,i) => {
-            if (v !== "" && var1.search(v) != var2.search(v)) {
-                b = false;
-                alert(b);
-            }
         })
-      }
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        });
+      });
+    },
+    test(var1, var2) {
+      var b = true;
+      var str = var2.split("*");
+      str.forEach((v, i) => {
+        if (v !== "" && var1.search(v) != var2.search(v)) {
+          b = false;
+          alert(b);
+        }
+      })
+    }
   }
 }
 </script>

@@ -1,8 +1,8 @@
 <template>
     <div class="tmsDiv">
         <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
-            <el-form-item label="标题" prop="name">
-                <el-input v-model="ruleForm.name" placeholder="请输入标题"></el-input>
+            <el-form-item label="主题" prop="name">
+                <el-input v-model="ruleForm.name" placeholder="请输入主题"></el-input>
             </el-form-item>
 
             <el-form-item label="内容" prop="content">
@@ -14,7 +14,7 @@
             </el-form-item>
 
             <el-form-item>
-                <el-button type="primary" @click="submitForm('ruleForm')">立即创建</el-button>
+                <el-button type="primary" @click="submitForm('ruleForm')">确定</el-button>
                 <el-button @click="resetForm('ruleForm')">重置</el-button>
             </el-form-item>
         </el-form>
@@ -24,6 +24,8 @@
 
 <script>
 import UploadImageBig from '@/views/common/uploadImageBig'
+import { updateNoticeInfo, addLegendInfo, getLegendInfo } from '@/api/legend'
+
 
 export default {
     components: { UploadImageBig },
@@ -31,14 +33,15 @@ export default {
     data() {
         return {
             ruleForm: {
+                id: '',
                 name: '',
                 content: '',
                 imageUrl: ''
             },
             rules: {
                 name: [
-                    { required: true, message: '请输入活动名称', trigger: 'blur' },
-                    { min: 3, max: 5, message: '长度在 3 到 5 个字符', trigger: 'blur' }
+                    { required: true, message: '请输入主题名称', trigger: 'blur' },
+                    { min: 3, max: 20, message: '长度在 3 到 20 个字符', trigger: 'blur' }
                 ],
                 content: [
                     { required: true, message: '请填写内容', trigger: 'blur' }
@@ -49,16 +52,34 @@ export default {
             }
         };
     },
+    created() {
+        getLegendInfo().then(response => {
+            this.ruleForm = Object.assign(this.ruleForm, response)
+        })
+    },
     methods: {
-        submitForm(formName) {
-            this.$refs[formName].validate((valid) => {
-                if (valid) {
-                    alert('submit!');
-                } else {
-                    console.log('error submit!!');
-                    return false;
-                }
-            });
+        submitForm() {
+            debugger
+            if ('' === this.ruleForm.id) {
+                addLegendInfo(this.ruleForm).then(response => {
+                    this.$notify({
+                        title: '成功',
+                        message: '添加成功',
+                        type: 'success',
+                        duration: 2000
+                    })
+                })
+            } else {
+                updateNoticeInfo(this.ruleForm).then(response => {
+                    this.$notify({
+                        title: '成功',
+                        message: '添加成功',
+                        type: 'success',
+                        duration: 2000
+                    })
+                })
+            }
+
         },
         resetForm(formName) {
             debugger
@@ -75,6 +96,6 @@ export default {
 <style>
 .tmsDiv {
     width: 600px;
-    margin:50px
+    margin: 50px
 }
 </style>
