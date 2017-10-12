@@ -48,7 +48,7 @@
       <el-table-column align="center" label="操作" width="150">
         <template scope="scope">
           <router-link :to="'/tms/tmsActivityEdit/' + scope.row.id">
-            <el-button size="small" type="success" @click="getInfo(scope.row)">修改
+            <el-button size="small" type="success">修改
             </el-button>
           </router-link>
           <el-button si <el-button size="small" type="danger" @click="messageBox(scope.row)">删除

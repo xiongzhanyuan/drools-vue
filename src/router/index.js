@@ -31,8 +31,9 @@ const HomePage = _import('home/homePage')
 /* tmscq */
 const TmsContent = _import('tmscq/tmsContent')
 const TmsActivityList = _import('tmscq/tmsActivityList')
-const TmsActivity = _import('tmscq/tmsActivityNew')
+// const TmsActivity = _import('tmscq/tmsActivityNew')
 const TmsActivityEdit = _import('tmscq/tmsActivityNewEdit')
+const TmsActivity = _import('tmscq/tmsActivityInsert') 
 
 /* scenicSpot */
 const ScenicSpot = _import('scenic/scenicSpot')
@@ -75,58 +76,58 @@ export default new Router({
 })
 
 export const asyncRouterMap = [
-  {
-    path: '/system',
-    component: Layout,
-    redirect: 'noredirect',
-    name: '系统管理',
-    icon: 'zujian',
-    children: [
-      { path: 'userList', component: UserList, name: '用户管理', icon: 'zonghe' }
-    ]
-  },
+  // {
+  //   path: '/system',
+  //   component: Layout,
+  //   redirect: 'noredirect',
+  //   name: '系统管理',
+  //   icon: 'zujian',
+  //   children: [
+  //     { path: 'userList', component: UserList, name: '用户管理', icon: 'zonghe' }
+  //   ]
+  // },
 
-  {
-    path: '/homePage',
-    component: Layout,
-    redirect: '/homePage/index',
-    icon: 'tubiao',
-    noDropdown: true,
-    children: [{ path: 'homePage', name: '首页功能管理', component: HomePage}]
-  },
+  // {
+  //   path: '/homePage',
+  //   component: Layout,
+  //   redirect: '/homePage/index',
+  //   icon: 'tubiao',
+  //   noDropdown: true,
+  //   children: [{ path: 'homePage', name: '首页功能管理', component: HomePage}]
+  // },
 
-  {
-    path: '/scenicSpot',
-    component: Layout,
-    redirect: '/scenicSpot/index',
-    icon: 'tab',
-    noDropdown: true,
-    children: [{ path: 'scenicSpot', name: '景区管理', component: ScenicSpot}]
-  },
+  // {
+  //   path: '/scenicSpot',
+  //   component: Layout,
+  //   redirect: '/scenicSpot/index',
+  //   icon: 'tab',
+  //   noDropdown: true,
+  //   children: [{ path: 'scenicSpot', name: '景区管理', component: ScenicSpot}]
+  // },
 
-  {
-    path: '/customNotice',
-    component: Layout,
-    redirect: '/customNotice/index',
-    icon: 'theme',
-    noDropdown: true,
-    children: [{ path: 'customNotice', name: '游客须知', component: CustomNotice}]
-  },
+  // {
+  //   path: '/customNotice',
+  //   component: Layout,
+  //   redirect: '/customNotice/index',
+  //   icon: 'theme',
+  //   noDropdown: true,
+  //   children: [{ path: 'customNotice', name: '游客须知', component: CustomNotice}]
+  // },
 
-  {
-    path: '/feedBack',
-    component: Layout,
-    redirect: '/feedBack/index',
-    icon: 'mima',
-    noDropdown: true,
-    children: [{ path: 'feedBack', name: '用户反馈', component: FeedBack}]
-  },
+  // {
+  //   path: '/feedBack',
+  //   component: Layout,
+  //   redirect: '/feedBack/index',
+  //   icon: 'mima',
+  //   noDropdown: true,
+  //   children: [{ path: 'feedBack', name: '用户反馈', component: FeedBack}]
+  // },
 
   {
     path: '/tms',
     component: Layout,
     redirect: 'noredirect',
-    name: '天门山传奇',
+    name: '组件',
     icon: 'table',
     children: [
       { path: 'tmsContent', component: TmsContent, name: '内容', icon: 'zonghe' }, 

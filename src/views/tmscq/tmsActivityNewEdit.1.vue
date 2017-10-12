@@ -4,9 +4,9 @@
 
       <div class="sub-navbar">
         <template>
-          <el-button v-loading="loading" style="margin-left: 10px;" type="success" @click="submitForm()">发布
+          <el-button v-loading="loading" style="margin-left: 10px;" type="success" @click="submitForm()">确定修改
           </el-button>
-          <el-button v-loading="loading" type="warning" @click="addModule()">添加详情模板</el-button>
+          <!-- <el-button v-loading="loading" type="warning">预览</el-button> -->
         </template>
       </div>
 
@@ -40,30 +40,13 @@
         </el-row>
 
         <!-- <el-form-item style="margin-bottom: 40px;" label-width="45px" label="摘要:">
-              <el-input type="textarea" class="article-textarea" :rows="1" autosize placeholder="请输入摘要" v-model="postForm.subject">
-              </el-input>
-            </el-form-item> -->
+            <el-input type="textarea" class="article-textarea" :rows="1" autosize placeholder="请输入摘要" v-model="postForm.subject">
+            </el-input>
+          </el-form-item> -->
 
-        <!-- <div class="editor-container">
-              <tinymce :height=400 ref="editor" v-model="postForm.content"></tinymce>
-            </div> -->
-      </div>
-      <div class="tmsDetailDiv" v-for="(item, index) in postForm.detailForm" :key="item + ''">
-        <span></span>
-        <el-form :model="item" ref="postForm.detailForm" label-width="100px">
-          <el-form-item label="详情标题" prop="name">
-            <el-input v-model="item.name"></el-input>
-          </el-form-item>
-          <el-form-item label="详情内容" prop="content">
-            <el-input type="textarea" :autosize="{ minRows: 3, maxRows: 5}" v-model="item.content" placeholder="请输入内容"></el-input>
-          </el-form-item>
-          <el-form-item label="图片" prop="imageUrl">
-            <UploadAll :parentSourceUrl.sync='item.imageUrl' v-model="item.imageUrl"></UploadAll>
-          </el-form-item>
-          <el-form-item label="视频" prop="videoUrl">
-            <UploadAll :parentSourceUrl.sync='item.videoUrl' v-model="item.videoUrl"></UploadAll>
-          </el-form-item>
-        </el-form>
+        <div class="editor-container">
+          <tinymce :height=400 ref="editor" v-model="postForm.content"></tinymce>
+        </div>
       </div>
     </el-form>
 
@@ -71,8 +54,7 @@
 </template>
 
 <script>
-// import Tinymce from '@/components/Tinymce'
-import UploadAll from '@/views/common/uploadAll'
+import Tinymce from '@/components/Tinymce'
 import MDinput from '@/components/MDinput'
 import Sticky from '@/components/Sticky' // 粘性header组件
 import { fetchLegendActivityList, getLegendActivityInfo, addLegendActivityInfo, updateLegendActivityInfo, deleteLegendActivityInfo } from '@/api/legend'
@@ -80,10 +62,9 @@ import { fetchLegendActivityList, getLegendActivityInfo, addLegendActivityInfo, 
 
 export default {
   name: 'addTmsActivity',
-  components: { UploadAll, MDinput, Sticky },
+  components: { Tinymce, MDinput, Sticky },
   data() {
     const validateRequire = (rule, value, callback) => {
-      debugger
       if (value === '') {
         this.$message({
           message: rule.field + '为必传项',
@@ -97,17 +78,12 @@ export default {
 
     return {
       postForm: {
+        id: '',
         name: '',
-        startDate: '',
-        endDate: '',
+        startTime: '',
+        endTime: '',
         content: '',
-        detailForm: []
-      },
-      blankDetailForm: {
-        name: '',
-        content: '',
-        imageUrl: '',
-        videoUrl: ''
+        id: undefined
       },
       loading: false,
       rules: {
@@ -119,12 +95,17 @@ export default {
 
   },
   created() {
+    const id = this.$route.params.id
+    getLegendActivityInfo(id).then(response => {
+      this.postForm = Object.assign(this.postForm, response)
+    })
 
   },
+  watch: {
+    // 监测路由变化,只要变化了就调用获取路由参数方法将数据存储本组件即可
+    '$route': 'getParams'
+  },
   methods: {
-    addModule() {
-      this.postForm.detailForm.push(this.blankDetailForm)
-    },
     fetchData() {
       fetchArticle().then(response => {
         this.postForm = response.data
@@ -136,14 +117,14 @@ export default {
     submitForm() {
       this.$refs.postForm.validate(valid => {
         if (valid) {
-          addLegendActivityInfo(this.postForm).then(response => {
+          updateLegendActivityInfo(this.postForm).then(response => {
             this.$notify({
               title: '成功',
               message: '添加成功',
               type: 'success',
               duration: 2000
-            }),
-              this.$router.go(-1)
+            })
+            this.$router.go(-1)
           })
         } else {
           console.log('error submit!!')
@@ -197,6 +178,7 @@ export default {
   }
   .sub-navbar {
     margin-top: 10px;
+    margin-right: 30px;
     text-align: right;
   }
 }
