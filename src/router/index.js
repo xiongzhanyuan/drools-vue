@@ -35,6 +35,10 @@ const TmsActivityList = _import('tmscq/tmsActivityList')
 const TmsActivityEdit = _import('tmscq/tmsActivityNewEdit')
 const TmsActivity = _import('tmscq/tmsActivityInsert')
 
+const MinJianChuanShuoList = _import('tmscq/minJianChuanShuoList')
+const MinJianChuanShuoEdit = _import('tmscq/minJianChuanShuoEdit')
+const MinJianChuanShuoInsert = _import('tmscq/minJianChuanShuoInsert')
+
 /* scenicSpot */
 const ScenicSpot = _import('scenic/scenicSpot')
 
@@ -178,13 +182,13 @@ export const asyncRouterMap = [{
     children: [{
         path: 'tmsContent',
         component: TmsContent,
-        name: '内容',
+        name: '天门山介绍',
         icon: 'zonghe'
       },
       {
         path: 'tmsActivityList',
         component: TmsActivityList,
-        name: '活动',
+        name: '天门山活动',
         icon: 'zonghe'
       },
       {
@@ -195,6 +199,22 @@ export const asyncRouterMap = [{
       {
         path: 'tmsActivityEdit/:id',
         component: TmsActivityEdit,
+        hidden: true
+      },
+      {
+        path: 'minJianChuanShuoList',
+        component: MinJianChuanShuoList,
+        name: '民间传说',
+        icon: 'zonghe'
+      },
+      {
+        path: 'minJianChuanShuoInsert',
+        component: MinJianChuanShuoInsert,
+        hidden: true
+      },
+      {
+        path: 'minJianChuanShuoEdit/:id',
+        component: MinJianChuanShuoEdit,
         hidden: true
       }
     ]

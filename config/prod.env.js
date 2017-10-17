@@ -1,4 +1,4 @@
 module.exports = {
   NODE_ENV: '"production"',
-  BASE_API: '"http://122.112.243.143:8082"',
+  BASE_API: '"http://127.0.0.1:8082"',
 }

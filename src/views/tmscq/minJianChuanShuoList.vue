@@ -4,16 +4,8 @@
       <el-input @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" placeholder="标题" v-model="listQuery.name">
       </el-input>
 
-      <span class="demonstration">开始时间</span>
-      <el-date-picker v-model="listQuery.startTime" type="date" placeholder="选择开始时间">
-      </el-date-picker>
-
-      <span class="demonstration">结束时间</span>
-      <el-date-picker v-model="listQuery.endTime" type="date" placeholder="选择结束时间">
-      </el-date-picker>
-
       <el-button class="filter-item" type="primary" icon="search" @click="handleFilter">搜索</el-button>
-      <router-link :to="'/tms/tmsActivity'">
+      <router-link :to="'/tms/minJianChuanShuoInsert'">
         <el-button class="filter-item" style="margin-left: 10px;" type="primary" icon="edit">添加</el-button>
 
       </router-link>
@@ -35,19 +27,19 @@
 
       <el-table-column min-width="150px" label="开始时间">
         <template scope="scope">
-          <span>{{scope.row.startTime | formatDate}}</span>
+          <span></span>
         </template>
       </el-table-column>
 
       <el-table-column min-width="150px" label="结束时间">
         <template scope="scope">
-          <span>{{scope.row.endTime | formatDate}}</span>
+          <span></span>
         </template>
       </el-table-column>
 
       <el-table-column align="center" label="操作" width="150">
         <template scope="scope">
-          <router-link :to="'/tms/tmsActivityEdit/' + scope.row.id">
+          <router-link :to="'/tms/minJianChuanShuoEdit/' + scope.row.id">
             <el-button size="small" type="success">修改
             </el-button>
           </router-link>
@@ -79,7 +71,7 @@ import { fetchLegendActivityList, getLegendActivityInfo, addLegendActivityInfo, 
 import { formatDate } from '@/utils/date.js';
 
 export default {
-  name: 'tmsList',
+  name: 'minJianChuanShuoList',
   data() {
     return {
       list: null,
@@ -87,9 +79,7 @@ export default {
       listLoading: true,
       listQuery: {
         name: null,
-        startTime: null,
-        endTime: null,
-        type: 1,
+        type: 2,
         page: {
           pageNo: 1,
           pageSize: 10
@@ -115,13 +105,6 @@ export default {
     getList() {
       this.listLoading = true
       const temp = Object.assign({}, this.listQuery)
-      if (temp.startTime) {
-        temp.startTime = this.listQuery.startTime.getTime()
-      }
-
-      if (temp.endTime) {
-        temp.endTime = this.listQuery.endTime.getTime()
-      }
       fetchLegendActivityList(temp).then(response => {
         this.list = response.list
         this.total = response.totalCount

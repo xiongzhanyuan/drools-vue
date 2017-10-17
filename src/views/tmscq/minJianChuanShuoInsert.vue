@@ -23,19 +23,6 @@
                         <el-input v-model="ruleForm.content"></el-input>
                     </el-form-item>
 
-                    <el-form-item label="活动时间" required>
-                        <el-col :span="11">
-                            <el-form-item prop="startTime">
-                                <el-date-picker type="date" placeholder="开始日期" v-model="ruleForm.startTime" style="width: 100%;"></el-date-picker>
-                            </el-form-item>
-                        </el-col>
-                        <el-col class="line" :span="2">——</el-col>
-                        <el-col :span="11">
-                            <el-form-item prop="endTime">
-                                <el-date-picker type="date" placeholder="结束日期" v-model="ruleForm.endTime" style="width: 100%;"></el-date-picker>
-                            </el-form-item>
-                        </el-col>
-                    </el-form-item>
                     <el-form-item label="封面图片">
                         <UploadImage v-model="ruleForm.imageUrl" @uploaded="imageUploaded"></UploadImage>
                     </el-form-item>
@@ -79,16 +66,14 @@ import UploadImage from '@/views/common/uploadImage'
 
 export default {
     components: { UploadAll, UploadImage },
-
+    
     data() {
         return {
             ruleForm: {
                 name: '',
-                startTime: '',
-                endTime: '',
                 content: '',
                 imageUrl: '',
-                type: 1,
+                type: 2,
                 detailForm: []
             },
             blankDetailForm: {
@@ -101,12 +86,6 @@ export default {
                 name: [
                     { required: true, message: '请输入活动名称', trigger: 'blur' },
                     { min: 3, max: 50, message: '长度在 3 到 50 个字符', trigger: 'blur' }
-                ],
-                endTime: [
-                    { type: 'date', required: true, message: '请选择开始日期', trigger: 'change' }
-                ],
-                endTime: [
-                    { type: 'date', required: true, message: '请选择结束时间', trigger: 'change' }
                 ],
                 content: [
                     { required: true, message: '请填写内容', trigger: 'blur' }
