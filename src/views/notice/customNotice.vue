@@ -9,6 +9,14 @@
                 <el-input type="textarea" :autosize="{ minRows: 2, maxRows: 4}" v-model="ruleForm.content" placeholder="请输入内容"></el-input>
             </el-form-item>
 
+            <el-form-item label="咨询电话" prop="consultPhone">
+                <el-input v-model="ruleForm.consultPhone" placeholder="请输入咨询电话"></el-input>
+            </el-form-item>
+
+            <el-form-item label="投诉电话" prop="complaintPhone">
+                <el-input v-model="ruleForm.complaintPhone" placeholder="请输入投诉电话"></el-input>
+            </el-form-item>
+
             <el-form-item label="图片" prop="imageUrl">
                 <UploadImageBig v-model="ruleForm.imageUrl" @uploaded="imageUploaded"></UploadImageBig>
             </el-form-item>
@@ -36,7 +44,9 @@ export default {
                 id: '',
                 name: '',
                 content: '',
-                imageUrl: ''
+                imageUrl: '',
+                complaintPhone: '',
+                consultPhone: ''
             },
             rules: {
                 name: [

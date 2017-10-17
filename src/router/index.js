@@ -33,7 +33,7 @@ const TmsContent = _import('tmscq/tmsContent')
 const TmsActivityList = _import('tmscq/tmsActivityList')
 // const TmsActivity = _import('tmscq/tmsActivityNew')
 const TmsActivityEdit = _import('tmscq/tmsActivityNewEdit')
-const TmsActivity = _import('tmscq/tmsActivityInsert') 
+const TmsActivity = _import('tmscq/tmsActivityInsert')
 
 /* scenicSpot */
 const ScenicSpot = _import('scenic/scenicSpot')
@@ -47,112 +47,269 @@ const FeedBack = _import('feedBack/feedBack')
 /* user page */
 const UserList = _import('user/user_list')
 
+/* liveShow */
+const LiveShowList = _import('liveShow/liveShowList')
+const LiveShowEdit = _import('liveShow/liveShowEdit')
+const LiveShowInsert = _import('liveShow/liveShowInsert')
+
+/* voice */
+const VoiceManage = _import('voice/voiceManage')
+
+/* wonderful */
+const WonderfulUserList = _import('wonderful/wonderfulUserList')
+const WonderfulOrgList = _import('wonderful/wonderfulOrgList')
+
+/* mapManage */
+const MapManage = _import('map/mapManage')
+
+
 Vue.use(Router)
 
- /**
-  * icon : the icon show in the sidebar
-  * hidden : if `hidden:true` will not show in the sidebar
-  * redirect : if `redirect:noredirect` will not redirct in the levelbar
-  * noDropdown : if `noDropdown:true` will not has submenu in the sidebar
-  * meta : `{ role: ['admin'] }`  will control the page role
-  **/
-export const constantRouterMap = [
-  { path: '/login', component: Login, hidden: true },
-  { path: '/404', component: Err404, hidden: true },
+/**
+ * icon : the icon show in the sidebar
+ * hidden : if `hidden:true` will not show in the sidebar
+ * redirect : if `redirect:noredirect` will not redirct in the levelbar
+ * noDropdown : if `noDropdown:true` will not has submenu in the sidebar
+ * meta : `{ role: ['admin'] }`  will control the page role
+ **/
+export const constantRouterMap = [{
+    path: '/login',
+    component: Login,
+    hidden: true
+  },
+  {
+    path: '/404',
+    component: Err404,
+    hidden: true
+  },
   {
     path: '/',
     component: Layout,
     redirect: '/dashboard',
     name: 'Home',
     hidden: true,
-    children: [{ path: 'dashboard', component: dashboard }]
+    children: [{
+      path: 'dashboard',
+      component: dashboard
+    }]
   }
 ]
 
 export default new Router({
   // mode: 'history', //后端支持可开
-  scrollBehavior: () => ({ y: 0 }),
+  scrollBehavior: () => ({
+    y: 0
+  }),
   routes: constantRouterMap
 })
 
-export const asyncRouterMap = [
-  // {
-  //   path: '/system',
-  //   component: Layout,
-  //   redirect: 'noredirect',
-  //   name: '系统管理',
-  //   icon: 'zujian',
-  //   children: [
-  //     { path: 'userList', component: UserList, name: '用户管理', icon: 'zonghe' }
-  //   ]
-  // },
+export const asyncRouterMap = [{
+    path: '/system',
+    component: Layout,
+    redirect: 'noredirect',
+    name: '系统管理',
+    icon: 'zujian',
+    children: [{
+      path: 'userList',
+      component: UserList,
+      name: '用户管理',
+      icon: 'zonghe'
+    }]
+  },
 
-  // {
-  //   path: '/homePage',
-  //   component: Layout,
-  //   redirect: '/homePage/index',
-  //   icon: 'tubiao',
-  //   noDropdown: true,
-  //   children: [{ path: 'homePage', name: '首页功能管理', component: HomePage}]
-  // },
+  {
+    path: '/homePage',
+    component: Layout,
+    redirect: '/homePage/index',
+    icon: 'tubiao',
+    noDropdown: true,
+    children: [{
+      path: 'homePage',
+      name: '首页功能管理',
+      component: HomePage
+    }]
+  },
 
-  // {
-  //   path: '/scenicSpot',
-  //   component: Layout,
-  //   redirect: '/scenicSpot/index',
-  //   icon: 'tab',
-  //   noDropdown: true,
-  //   children: [{ path: 'scenicSpot', name: '景区管理', component: ScenicSpot}]
-  // },
+  {
+    path: '/scenicSpot',
+    component: Layout,
+    redirect: '/scenicSpot/index',
+    icon: 'tab',
+    noDropdown: true,
+    children: [{
+      path: 'scenicSpot',
+      name: '景区管理',
+      component: ScenicSpot
+    }]
+  },
 
-  // {
-  //   path: '/customNotice',
-  //   component: Layout,
-  //   redirect: '/customNotice/index',
-  //   icon: 'theme',
-  //   noDropdown: true,
-  //   children: [{ path: 'customNotice', name: '游客须知', component: CustomNotice}]
-  // },
+  {
+    path: '/customNotice',
+    component: Layout,
+    redirect: '/customNotice/index',
+    icon: 'theme',
+    noDropdown: true,
+    children: [{
+      path: 'customNotice',
+      name: '游客须知',
+      component: CustomNotice
+    }]
+  },
 
-  // {
-  //   path: '/feedBack',
-  //   component: Layout,
-  //   redirect: '/feedBack/index',
-  //   icon: 'mima',
-  //   noDropdown: true,
-  //   children: [{ path: 'feedBack', name: '用户反馈', component: FeedBack}]
-  // },
+  {
+    path: '/feedBack',
+    component: Layout,
+    redirect: '/feedBack/index',
+    icon: 'mima',
+    noDropdown: true,
+    children: [{
+      path: 'feedBack',
+      name: '用户反馈',
+      component: FeedBack
+    }]
+  },
 
   {
     path: '/tms',
     component: Layout,
     redirect: 'noredirect',
-    name: '组件',
+    name: '天门山传奇',
     icon: 'table',
-    children: [
-      { path: 'tmsContent', component: TmsContent, name: '内容', icon: 'zonghe' }, 
-      { path: 'tmsActivityList', component: TmsActivityList, name: '活动', icon: 'zonghe' }, 
-      { path: 'tmsActivity', component: TmsActivity, hidden: true }, 
-      { path: 'tmsActivityEdit/:id', component: TmsActivityEdit, hidden: true }
+    children: [{
+        path: 'tmsContent',
+        component: TmsContent,
+        name: '内容',
+        icon: 'zonghe'
+      },
+      {
+        path: 'tmsActivityList',
+        component: TmsActivityList,
+        name: '活动',
+        icon: 'zonghe'
+      },
+      {
+        path: 'tmsActivity',
+        component: TmsActivity,
+        hidden: true
+      },
+      {
+        path: 'tmsActivityEdit/:id',
+        component: TmsActivityEdit,
+        hidden: true
+      }
     ]
   },
 
   {
-    path: '/example',
+    path: '/live',
     component: Layout,
-    redirect: 'noredirect',
-    name: '组件',
-    icon: 'tubiao',
-    children: [
-      { path: 'uploadImageMulti', component: UploadImageMulti, name: '批量上传'},
-      { path: 'uploadVideo', component: UploadVideo, name: '视频上传'},
-      { path: 'uploadAudio', component: UploadAudio, name: '音频上传'},
-      { path: 'table', component: Table, name: '表格'},
-      { path: 'uploadImage', component: UploadImage, name: '图片上传'},
-      // { path: 'uploadAll', component: UploadAll, name: '都能上传'},
-      // { path: 'tinymce', component: Tinymce, name: '富文本'}
+    redirect: '/live/index',
+    icon: 'mima',
+    noDropdown: true,
+    children: [{
+        path: 'liveShowList',
+        name: '实景演出',
+        component: LiveShowList
+      },
+      {
+        path: 'liveShowInsert',
+        component: LiveShowInsert,
+        hidden: true
+      },
+      {
+        path: 'liveShowEdit/:id',
+        component: LiveShowEdit,
+        hidden: true
+      }
     ]
   },
 
-  { path: '*', redirect: '/404', hidden: true }
+  {
+    path: '/voice',
+    component: Layout,
+    redirect: '/voice/index',
+    icon: 'tuozhuai',
+    noDropdown: true,
+    children: [{
+      path: 'voiceManage',
+      name: '语音维护',
+      component: VoiceManage
+    }]
+  },
+
+  {
+    path: '/wonderful',
+    component: Layout,
+    redirect: 'wonderful',
+    name: '精彩风景维护',
+    icon: 'icons',
+    children: [{
+        path: 'wonderfulUserList',
+        component: WonderfulUserList,
+        name: '用户上传审批',
+        icon: 'zonghe'
+      },
+      {
+        path: 'wonderfulOrgList',
+        component: WonderfulOrgList,
+        name: '宣传片维护',
+        icon: 'zonghe'
+      }
+    ]
+  },
+
+  {
+    path: '/map',
+    component: Layout,
+    redirect: '/map/index',
+    icon: 'yanjing',
+    noDropdown: true,
+    children: [{
+      path: 'mapManage',
+      name: '手绘地图',
+      component: MapManage
+    }]
+  },
+
+  // {
+  //   path: '/example',
+  //   component: Layout,
+  //   redirect: 'noredirect',
+  //   name: '组件',
+  //   icon: 'tubiao',
+  //   children: [{
+  //       path: 'uploadImageMulti',
+  //       component: UploadImageMulti,
+  //       name: '批量上传'
+  //     },
+  //     {
+  //       path: 'uploadVideo',
+  //       component: UploadVideo,
+  //       name: '视频上传'
+  //     },
+  //     {
+  //       path: 'uploadAudio',
+  //       component: UploadAudio,
+  //       name: '音频上传'
+  //     },
+  //     {
+  //       path: 'table',
+  //       component: Table,
+  //       name: '表格'
+  //     },
+  //     {
+  //       path: 'uploadImage',
+  //       component: UploadImage,
+  //       name: '图片上传'
+  //     },
+  //     // { path: 'uploadAll', component: UploadAll, name: '都能上传'},
+  //     // { path: 'tinymce', component: Tinymce, name: '富文本'}
+  //   ]
+  // },
+
+  {
+    path: '*',
+    redirect: '/404',
+    hidden: true
+  }
 ]

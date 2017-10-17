@@ -4,11 +4,6 @@
       <el-input @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" placeholder="名称" v-model="listQuery.name">
       </el-input>
 
-      <el-select v-model="listQuery.level" placeholder="级别">
-        <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
-        </el-option>
-      </el-select>
-
       <el-button class="filter-item" type="primary" icon="search" @click="handleFilter">搜索</el-button>
       <el-button class="filter-item" style="margin-left: 10px;" @click="handleCreate" type="primary" icon="edit">添加</el-button>
     </div>
@@ -27,16 +22,21 @@
         </template>
       </el-table-column>
 
-      <el-table-column min-width="60px" label="级别">
+      <el-table-column min-width="60px" label="触发条件">
         <template scope="scope">
-          <span v-if="1 == scope.row.level">景区</span>
-          <span v-if="2 == scope.row.level">景点</span>
+          <span v-if="1 == scope.row.type">经纬度</span>
         </template>
       </el-table-column>
 
-      <el-table-column min-width="150px" label="隶属景区">
+      <el-table-column width="180px" align="center" label="经度">
         <template scope="scope">
-          <span>{{scope.row.parentName}}</span>
+          <span>{{scope.row.lng}}</span>
+        </template>
+      </el-table-column>
+
+      <el-table-column width="180px" align="center" label="纬度">
+        <template scope="scope">
+          <span>{{scope.row.lat}}</span>
         </template>
       </el-table-column>
 
@@ -70,34 +70,31 @@
           <el-input v-model="temp.name"></el-input>
         </el-form-item>
 
-        <el-form-item label="级别" prop="level">
-          <el-select v-if="dialogStatus=='create'" v-model="temp.level" placeholder="请选择">
+        <el-form-item label="触发条件" prop="type">
+          <el-select v-if="dialogStatus=='create'" v-model="temp.type" placeholder="请选择">
             <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
             </el-option>
           </el-select>
-          <el-select v-else v-model="temp.level" placeholder="请选择" disabled>
+          <el-select v-else v-model="temp.type" placeholder="请选择" disabled>
             <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
             </el-option>
           </el-select>
         </el-form-item>
 
-        <el-form-item label="父景区" prop="parentId">
-          <el-select v-model="temp.parentId" placeholder="请选择">
-            <el-option v-for="item in parentOptions" :key="item.value" :label="item.name" :value="item.id">
-            </el-option>
-          </el-select>
+        <el-form-item label="经度" prop="lng">
+          <el-input v-model="temp.lng"></el-input>
         </el-form-item>
 
-        <el-form-item label="景区内容" prop="content">
+        <el-form-item label="纬度" prop="lat">
+          <el-input v-model="temp.lat"></el-input>
+        </el-form-item>
+
+        <el-form-item label="语音内容" prop="content">
           <el-input type="textarea" :autosize="{ minRows: 3, maxRows: 5}" v-model="temp.content" placeholder="请输入内容"></el-input>
         </el-form-item>
 
-        <el-form-item label="图片">
-          <UploadImageMulti childImageUrls=temp.imageUrls v-model="temp.imageUrls" ref="imageMulti" @uploaded="imageUploaded" @removed="imageRemoved"></UploadImageMulti>
-        </el-form-item>
-
-        <el-form-item label="视频">
-          <UploadVideo childVideoUrls=temp.videoUrls v-model="temp.videoUrls" ref="uploadVideo" @videoUploaded="videoUploaded" @videoRemoved="videoRemoved"></UploadVideo>
+        <el-form-item label="推送话术" prop="pushContent">
+          <el-input type="textarea" :autosize="{ minRows: 3, maxRows: 5}" v-model="temp.pushContent" placeholder="请输入话术"></el-input>
         </el-form-item>
 
         <el-form-item label="语音">
@@ -124,17 +121,14 @@
 
 
 <script>
-import { getScenicList, updateScenicInfo, addScenicInfo, deleteScenicInfo, getScenicInfo } from '@/api/scenic'
+import { fetchVoiceManageList, getVoiceManageInfo, addVoiceManageInfo, updateVoiceManageInfo, deleteVoiceManageInfo } from '@/api/voice'
 import store from '@/store'
-import UploadImage from '@/views/common/uploadImage'
-import UploadImageMulti from '@/views/common/uploadImageMulti'
-import UploadVideo from '@/views/common/uploadVideo'
 import UploadAudio from '@/views/common/uploadAudio'
 import { formatDate } from '@/utils/date.js';
 
 export default {
-  components: { UploadImage, UploadImageMulti, UploadVideo, UploadAudio },
-  name: 'scenicList',
+  components: { UploadAudio },
+  name: 'voiceManage',
   data() {
     var validateName = (rule, value, callback) => {
       if (value.length <= 0) {
@@ -149,7 +143,6 @@ export default {
       listLoading: true,
       listQuery: {
         name: null,
-        level: null,
         page: {
           pageNo: 1,
           pageSize: 10
@@ -158,11 +151,11 @@ export default {
       temp: {
         id: undefined,
         name: '',
-        level: '',
-        parentId: '',
+        type: '',
+        lng: '',
+        lat: '',
         content: '',
-        imageUrls: [],
-        videoUrls: [],
+        pushContent: '',
         audioUrls: []
       },
       tableKey: 0,
@@ -179,13 +172,9 @@ export default {
       },
       options: [{
         value: 1,
-        label: '景区'
-      }, {
-        value: 2,
-        label: '景点'
+        label: '经纬度'
       }],
-      value: 1,
-      parentOptions: [],
+      value: 1
     }
   },
   created() {
@@ -200,22 +189,10 @@ export default {
   methods: {
     getList() {
       this.listLoading = true
-      getScenicList(this.listQuery).then(response => {
+      fetchVoiceManageList(this.listQuery).then(response => {
         this.list = response.list
         this.total = response.totalCount
         this.listLoading = false
-      })
-      this.getParentOptions();
-    },
-    getParentOptions() {
-      getScenicList({
-        level: 1,
-        page: {
-          pageNo: 1,
-          pageSize: 10000
-        }
-      }).then(response => {
-        this.parentOptions = response.list
       })
     },
     handleFilter() {
@@ -232,11 +209,10 @@ export default {
     getInfo(row) {
       var _this = this
       this.dialogFormVisible = true
-      getScenicInfo(row.id).then(response => {
+      getVoiceManageInfo(row.id).then(response => {
         this.temp = Object.assign(this.temp, response)
         this.dialogStatus = 'update'
         debugger
-        _this.$refs.uploadVideo.video = response.videoUrls && response.videoUrls[0] && response.videoUrls[0].url
         _this.$refs.uploadAudio.audio = response.audioUrls && response.audioUrls[0] && response.audioUrls[0].url
       })
     },
@@ -246,16 +222,12 @@ export default {
     cancel(formName) {
       this.resetForm(formName)
       this.dialogFormVisible = false
-      this.$refs.imageMulti.clear();
-      this.$refs.uploadVideo.clear();
       this.$refs.uploadAudio.clear();
 
     },
     handleClose() {
       this.resetForm('temp')
       this.dialogFormVisible = false
-      this.$refs.imageMulti.clear();
-      this.$refs.uploadVideo.clear();
       this.$refs.uploadAudio.clear();
     },
     handleCreate() {
@@ -263,23 +235,6 @@ export default {
       this.dialogStatus = 'create'
       this.dialogFormVisible = true
     },
-    imageUploaded(image) {
-      debugger
-      this.temp.imageUrls.push({ id: '', url: image })
-    },
-    imageRemoved(image) {
-      debugger
-      this.temp.imageUrls = this.temp.imageUrls.filter(e => e.url != image)
-    },
-    videoUploaded(video) {
-      //只能上传一个视频
-      this.temp.videoUrls = []
-      this.temp.videoUrls.push({ id: '', url: video })
-    },
-    videoRemoved(video) {
-      this.temp.videoUrls = this.temp.videoUrls.filter(e => e.url != video)
-    },
-
     audioUploaded(audio) {
       //只能上传一个音频
       this.temp.audioUrls = []
@@ -290,16 +245,7 @@ export default {
     },
 
     create() {
-      if (!this.temp.level) {
-        this.$message.error('级别不能为空')
-        return
-      }
-      if (this.temp.level == 2 && "" == this.temp.parentId) {
-        this.$message.error('景点的父景区不能为空')
-        return
-      }
-      debugger
-      addScenicInfo(this.temp).then(response => {
+      addVoiceManageInfo(this.temp).then(response => {
         this.resetForm('temp')
         this.getList()
         this.dialogFormVisible = false
@@ -310,13 +256,10 @@ export default {
           duration: 2000
         })
       })
-      this.$refs.imageMulti.clear();
-      this.$refs.uploadVideo.clear();
       this.$refs.uploadAudio.clear();
     },
     update() {
-
-      updateScenicInfo(this.temp).then(response => {
+      updateVoiceManageInfo(this.temp).then(response => {
         this.resetForm('temp')
         this.getList()
         this.dialogFormVisible = false
@@ -332,11 +275,11 @@ export default {
       this.temp = {
         id: undefined,
         name: '',
-        level: '',
-        parentId: '',
+        type: '',
+        lng: '',
+        lat: '',
         content: '',
-        imageUrls: [],
-        videoUrls: [],
+        pushContent: '',
         audioUrls: []
       }
     },
@@ -346,7 +289,7 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        deleteScenicInfo({ "id": row.id, "flagDelete": 1 }).then(response => {
+        deleteVoiceManageInfo({ "id": row.id, "flagDelete": 1 }).then(response => {
           this.$message({
             type: 'success',
             message: '删除成功!'

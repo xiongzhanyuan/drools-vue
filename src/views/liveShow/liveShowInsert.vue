@@ -74,7 +74,7 @@
 
 <script>
 import UploadAll from '@/views/common/uploadAll'
-import { fetchLegendActivityList, getLegendActivityInfo, addLegendActivityInfo, updateLegendActivityInfo, deleteLegendActivityInfo } from '@/api/legend'
+import { fetchLiveShowList, getLiveShowInfo, addLiveShowInfo, updateLiveShowInfo, deleteLiveShowInfo } from '@/api/live'
 import UploadImage from '@/views/common/uploadImage'
 
 export default {
@@ -115,7 +115,7 @@ export default {
     },
     methods: {
         submitForm(formName) {
-            addLegendActivityInfo(this.ruleForm).then(response => {
+            addLiveShowInfo(this.ruleForm).then(response => {
                 this.$notify({
                     title: '成功',
                     message: '添加成功',
