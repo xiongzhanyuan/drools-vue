@@ -6,6 +6,8 @@
 
     <div class="sub-navbar">
       <template>
+        <el-button style="margin-left: 10px;" type="info" @click="back()">返回
+        </el-button>
         <el-button style="margin-left: 10px;" type="success" @click="submitForm()">发布
         </el-button>
         <el-button type="warning" @click="addModule()">添加详情模板</el-button>
@@ -46,7 +48,7 @@
       <div class="tmsDetailDiv" v-for="(item, index) in ruleForm.detailForm" :key="item + ''">
         <ul>
           <li>
-            <a style="color :#337ab7">添加详情</a>
+            <a>详情模板：</a>
           </li>
 
           <li>
@@ -126,6 +128,9 @@ export default {
     '$route': 'getParams'
   },
   methods: {
+    back() {
+      history.go(-1)
+    },
     submitForm(formName) {
       debugger
       updateLiveShowInfo(this.ruleForm).then(response => {
@@ -185,5 +190,8 @@ export default {
 .sub-navbar {
   margin-top: 10px;
   text-align: right;
+  position: fixed;
+  right: 30px;
+  top: 40px;
 }
 </style>

@@ -36,6 +36,10 @@ export default {
       var type = file.name.toLowerCase().split('.')[1]
       let key;
       if (type === "png" || type === "jpeg" || type === "jpg") {
+        if(1024000 < file.size){
+          alert("图片大小不能超过1M")
+          return false
+        }
         key = 'tms/image/' + md5(file.name + new Date().getTime()) + file.name.substr(file.name.lastIndexOf('.'))
       } else if (type === "mp4") {
         key = 'tms/video/' + md5(file.name + new Date().getTime()) + file.name.substr(file.name.lastIndexOf('.'))

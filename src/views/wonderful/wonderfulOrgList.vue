@@ -65,7 +65,7 @@
         </el-form-item>
 
         <el-form-item label="栏目图片">
-          <UploadImage v-model="temp.imageUrl" @uploaded="imageUploaded"></UploadImage>
+          <UploadImageNotPermit v-model="temp.imageUrl" @uploaded="imageUploaded"></UploadImageNotPermit>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -89,10 +89,10 @@
 <script>
 import { fetchWonderfulPhotoList, getWonderfulPhotoInfo, addWonderfulPhotoInfo, updateWonderfulPhotoInfo, onLineWonderfulPhotoInfo, offLineWonderfulPhotoInfo } from '@/api/wonderful'
 import store from '@/store'
-import UploadImage from '@/views/common/uploadImage'
+import UploadImageNotPermit from '@/views/common/uploadImageNotPermit'
 
 export default {
-  components: { UploadImage },
+  components: { UploadImageNotPermit },
   name: 'wonderfulOrgList',
   data() {
     return {

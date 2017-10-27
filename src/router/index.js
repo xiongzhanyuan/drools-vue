@@ -107,19 +107,7 @@ export default new Router({
   routes: constantRouterMap
 })
 
-export const asyncRouterMap = [{
-    path: '/system',
-    component: Layout,
-    redirect: 'noredirect',
-    name: '系统管理',
-    icon: 'zujian',
-    children: [{
-      path: 'userList',
-      component: UserList,
-      name: '用户管理',
-      icon: 'zonghe'
-    }]
-  },
+export const asyncRouterMap = [
 
   {
     path: '/homePage',
@@ -129,7 +117,7 @@ export const asyncRouterMap = [{
     noDropdown: true,
     children: [{
       path: 'homePage',
-      name: '首页功能管理',
+      name: '首页管理',
       component: HomePage
     }]
   },
@@ -142,34 +130,20 @@ export const asyncRouterMap = [{
     noDropdown: true,
     children: [{
       path: 'scenicSpot',
-      name: '景区管理',
+      name: '景观区管理',
       component: ScenicSpot
     }]
   },
-
   {
-    path: '/customNotice',
+    path: '/map',
     component: Layout,
-    redirect: '/customNotice/index',
-    icon: 'theme',
+    redirect: '/map/index',
+    icon: 'yanjing',
     noDropdown: true,
     children: [{
-      path: 'customNotice',
-      name: '游客须知',
-      component: CustomNotice
-    }]
-  },
-
-  {
-    path: '/feedBack',
-    component: Layout,
-    redirect: '/feedBack/index',
-    icon: 'mima',
-    noDropdown: true,
-    children: [{
-      path: 'feedBack',
-      name: '用户反馈',
-      component: FeedBack
+      path: 'mapManage',
+      name: '手绘地图',
+      component: MapManage
     }]
   },
 
@@ -261,7 +235,7 @@ export const asyncRouterMap = [{
     path: '/wonderful',
     component: Layout,
     redirect: 'wonderful',
-    name: '精彩风景维护',
+    name: '精彩风景',
     icon: 'icons',
     children: [{
         path: 'wonderfulUserList',
@@ -278,16 +252,43 @@ export const asyncRouterMap = [{
     ]
   },
 
+
   {
-    path: '/map',
+    path: '/feedBack',
     component: Layout,
-    redirect: '/map/index',
-    icon: 'yanjing',
+    redirect: '/feedBack/index',
+    icon: 'mima',
     noDropdown: true,
     children: [{
-      path: 'mapManage',
-      name: '手绘地图',
-      component: MapManage
+      path: 'feedBack',
+      name: '用户反馈',
+      component: FeedBack
+    }]
+  },
+  {
+    path: '/customNotice',
+    component: Layout,
+    redirect: '/customNotice/index',
+    icon: 'theme',
+    noDropdown: true,
+    children: [{
+      path: 'customNotice',
+      name: '游客须知',
+      component: CustomNotice
+    }]
+  },
+
+  {
+    path: '/system',
+    component: Layout,
+    redirect: 'noredirect',
+    name: '系统管理',
+    icon: 'wujiaoxing',
+    children: [{
+      path: 'userList',
+      component: UserList,
+      name: '用户管理',
+      icon: 'zonghe'
     }]
   },
 

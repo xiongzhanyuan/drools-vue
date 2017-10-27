@@ -6,6 +6,8 @@
 
     <div class="sub-navbar">
       <template>
+        <el-button style="margin-left: 10px;" type="info" @click="back()">返回
+        </el-button>
         <el-button style="margin-left: 10px;" type="success" @click="submitForm()">发布
         </el-button>
         <el-button type="warning" @click="addModule()">添加详情模板</el-button>
@@ -24,7 +26,7 @@
           </el-form-item>
 
           <el-form-item label="封面图片">
-            <UploadImage v-model="ruleForm.imageUrl" @uploaded="imageUploaded"></UploadImage>
+            <UploadImageBig v-model="ruleForm.imageUrl" @uploaded="imageUploaded"></UploadImageBig>
           </el-form-item>
         </el-form>
       </div>
@@ -32,7 +34,7 @@
       <div class="tmsDetailDiv" v-for="(item, index) in ruleForm.detailForm" :key="item + ''">
         <ul>
           <li>
-            <a style="color :#337ab7">添加详情</a>
+            <a>详情模板：</a>
           </li>
 
           <li>
@@ -66,10 +68,10 @@
 <script>
 import UploadAll from '@/views/common/uploadAll'
 import { fetchLegendActivityList, getLegendActivityInfo, addLegendActivityInfo, updateLegendActivityInfo, deleteLegendActivityInfo } from '@/api/legend'
-import UploadImage from '@/views/common/uploadImage'
+import UploadImageBig from '@/views/common/uploadImageBig'
 
 export default {
-  components: { UploadAll, UploadImage },
+  components: { UploadAll, UploadImageBig },
 
   data() {
     return {
@@ -111,6 +113,9 @@ export default {
     '$route': 'getParams'
   },
   methods: {
+    back() {
+      history.go(-1)
+    },
     submitForm(formName) {
       debugger
       updateLegendActivityInfo(this.ruleForm).then(response => {
@@ -170,5 +175,8 @@ export default {
 .sub-navbar {
   margin-top: 10px;
   text-align: right;
+  position: fixed;
+  right: 30px;
+  top: 40px;
 }
 </style>

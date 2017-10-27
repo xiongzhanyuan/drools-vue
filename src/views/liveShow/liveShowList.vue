@@ -69,17 +69,23 @@
 <style>
 .tms-table {
   width: 100%;
-  margin-top: 20px
+  margin-top: 20px;
 }
 </style>
 
 
 <script>
-import { fetchLiveShowList, getLiveShowInfo, addLiveShowInfo, updateLiveShowInfo, deleteLiveShowInfo } from '@/api/live'
-import { formatDate } from '@/utils/date.js';
+import {
+  fetchLiveShowList,
+  getLiveShowInfo,
+  addLiveShowInfo,
+  updateLiveShowInfo,
+  deleteLiveShowInfo
+} from "@/api/live";
+import { formatDate } from "@/utils/date.js";
 
 export default {
-  name: 'liveShowList',
+  name: "liveShowList",
   data() {
     return {
       list: null,
@@ -96,67 +102,71 @@ export default {
       },
       tableKey: 0,
       textMap: {
-        update: '编辑',
-        create: '创建'
+        update: "编辑",
+        create: "创建"
       }
-    }
+    };
   },
   created() {
-    this.getList()
+    this.getList();
   },
   filters: {
     formatDate(time) {
-      var date = new Date(time);
-      return formatDate(date, 'yyyy-MM-dd');
+      if (!!time) {
+        var date = new Date(time);
+        return formatDate(date, "yyyy-MM-dd");
+      }
     }
   },
   methods: {
     getList() {
-      this.listLoading = true
-      const temp = Object.assign({}, this.listQuery)
+      this.listLoading = true;
+      const temp = Object.assign({}, this.listQuery);
       if (temp.startTime) {
-        temp.startTime = this.listQuery.startTime.getTime()
+        temp.startTime = this.listQuery.startTime.getTime();
       }
 
       if (temp.endTime) {
-        temp.endTime = this.listQuery.endTime.getTime()
+        temp.endTime = this.listQuery.endTime.getTime();
       }
       fetchLiveShowList(temp).then(response => {
-        this.list = response.list
-        this.total = response.totalCount
-        this.listLoading = false
-      })
+        this.list = response.list;
+        this.total = response.totalCount;
+        this.listLoading = false;
+      });
     },
     handleFilter() {
-      this.getList()
+      this.getList();
     },
     handleSizeChange(val) {
-      this.listQuery.page.pageSize = val
-      this.getList()
+      this.listQuery.page.pageSize = val;
+      this.getList();
     },
     handleCurrentChange(val) {
-      this.listQuery.page.pageNo = val
-      this.getList()
+      this.listQuery.page.pageNo = val;
+      this.getList();
     },
     messageBox(row) {
-      this.$confirm('此操作将永久删除该条记录, 是否继续?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
-        deleteLiveShowInfo({ "id": row.id, "flagDelete": 1 }).then(response => {
-          this.$message({
-            type: 'success',
-            message: '删除成功!'
+      this.$confirm("此操作将永久删除该条记录, 是否继续?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      })
+        .then(() => {
+          deleteLiveShowInfo({ id: row.id, flagDelete: 1 }).then(response => {
+            this.$message({
+              type: "success",
+              message: "删除成功!"
+            });
+            this.getList();
           });
-          this.getList()
         })
-      }).catch(() => {
-        this.$message({
-          type: 'info',
-          message: '已取消删除'
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "已取消删除"
+          });
         });
-      });
     },
     test(var1, var2) {
       var b = true;
@@ -166,8 +176,8 @@ export default {
           b = false;
           alert(b);
         }
-      })
+      });
     }
   }
-}
+};
 </script>

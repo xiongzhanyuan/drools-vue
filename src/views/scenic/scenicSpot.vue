@@ -5,7 +5,7 @@
       </el-input>
 
       <el-select v-model="listQuery.level" placeholder="级别">
-        <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
+        <el-option v-for="item in searchOptions" :key="item.value" :label="item.label" :value="item.value">
         </el-option>
       </el-select>
 
@@ -29,12 +29,13 @@
 
       <el-table-column min-width="60px" label="级别">
         <template scope="scope">
-          <span v-if="1 == scope.row.level">景区</span>
+          <span v-if="0 == scope.row.level">景区</span>
+          <span v-if="1 == scope.row.level">景观区</span>
           <span v-if="2 == scope.row.level">景点</span>
         </template>
       </el-table-column>
 
-      <el-table-column min-width="150px" label="隶属景区">
+      <el-table-column min-width="150px" label="隶属景观区">
         <template scope="scope">
           <span>{{scope.row.parentName}}</span>
         </template>
@@ -64,7 +65,7 @@
     </div>
 
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" :before-close="handleClose">
-      <el-form class="small-space" :model="temp" :rules="rules2" ref="temp" label-position="left" label-width="70px" style='width: 400px; margin-left:50px;'>
+      <el-form class="small-space" :model="temp" :rules="rules2" ref="temp" label-position="left" label-width="90px" style='width: 500px; margin-left:50px;'>
 
         <el-form-item label="名称" prop="name">
           <el-input v-model="temp.name"></el-input>
@@ -81,14 +82,18 @@
           </el-select>
         </el-form-item>
 
-        <el-form-item label="父景区" prop="parentId">
-          <el-select v-model="temp.parentId" placeholder="请选择">
+        <el-form-item label="隶属景观区" prop="parentId">
+          <el-select v-if="1 === temp.level || 0 === temp.level" v-model="temp.parentId" placeholder="请选择" disabled>
+            <el-option v-for="item in parentOptions" :key="item.value" :label="item.name" :value="item.id">
+            </el-option>
+          </el-select>
+          <el-select v-else v-model="temp.parentId" placeholder="请选择">
             <el-option v-for="item in parentOptions" :key="item.value" :label="item.name" :value="item.id">
             </el-option>
           </el-select>
         </el-form-item>
 
-        <el-form-item label="景区内容" prop="content">
+        <el-form-item label="景观区介绍" prop="content">
           <el-input type="textarea" :autosize="{ minRows: 3, maxRows: 5}" v-model="temp.content" placeholder="请输入内容"></el-input>
         </el-form-item>
 
@@ -178,14 +183,30 @@ export default {
         ]
       },
       options: [{
-        value: 1,
+        value: 0,
         label: '景区'
+      }, {
+        value: 1,
+        label: '景观区'
       }, {
         value: 2,
         label: '景点'
       }],
-      value: 1,
+      value: 0,
       parentOptions: [],
+      searchOptions: [{
+        value: '',
+        label: '全部'
+      },{
+        value: 0,
+        label: '景区'
+      }, {
+        value: 1,
+        label: '景观区'
+      }, {
+        value: 2,
+        label: '景点'
+      }],
     }
   },
   created() {
@@ -193,8 +214,10 @@ export default {
   },
   filters: {
     formatDate(time) {
-      var date = new Date(time);
-      return formatDate(date, 'yyyy-MM-dd hh : mm');
+      if (!!time) {
+        var date = new Date(time);
+        return formatDate(date, "yyyy-MM-dd");
+      }
     }
   },
   methods: {
@@ -290,12 +313,13 @@ export default {
     },
 
     create() {
-      if (!this.temp.level) {
+      if (0 !== this.temp.level && !this.temp.level) {
+        debugger
         this.$message.error('级别不能为空')
         return
       }
       if (this.temp.level == 2 && "" == this.temp.parentId) {
-        this.$message.error('景点的父景区不能为空')
+        this.$message.error('景点的隶属景观区不能为空')
         return
       }
       debugger

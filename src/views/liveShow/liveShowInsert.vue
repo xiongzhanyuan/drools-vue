@@ -45,7 +45,7 @@
             <div class="tmsDetailDiv" v-for="(item, index) in ruleForm.detailForm" :key="item + ''">
                 <ul>
                     <li>
-                        <a style="color :#337ab7">添加详情</a>
+                        <a>详情模板：</a>
                     </li>
                 </ul>
                 <el-form :model="item" ref="ruleForm.detailForm" label-width="100px" class="demo-ruleForm">
@@ -73,100 +73,116 @@
 
 
 <script>
-import UploadAll from '@/views/common/uploadAll'
-import { fetchLiveShowList, getLiveShowInfo, addLiveShowInfo, updateLiveShowInfo, deleteLiveShowInfo } from '@/api/live'
-import UploadImage from '@/views/common/uploadImage'
+import UploadAll from "@/views/common/uploadAll";
+import {
+  fetchLiveShowList,
+  getLiveShowInfo,
+  addLiveShowInfo,
+  updateLiveShowInfo,
+  deleteLiveShowInfo
+} from "@/api/live";
+import UploadImage from "@/views/common/uploadImage";
 
 export default {
-    components: { UploadAll, UploadImage },
+  components: { UploadAll, UploadImage },
 
-    data() {
-        return {
-            ruleForm: {
-                name: '',
-                startTime: '',
-                endTime: '',
-                content: '',
-                imageUrl: '',
-                detailForm: []
-            },
-            blankDetailForm: {
-                name: '',
-                content: '',
-                imageUrl: '',
-                videoUrl: ''
-            },
-            rules: {
-                name: [
-                    { required: true, message: '请输入活动名称', trigger: 'blur' },
-                    { min: 3, max: 50, message: '长度在 3 到 50 个字符', trigger: 'blur' }
-                ],
-                endTime: [
-                    { type: 'date', required: true, message: '请选择开始日期', trigger: 'change' }
-                ],
-                endTime: [
-                    { type: 'date', required: true, message: '请选择结束时间', trigger: 'change' }
-                ],
-                content: [
-                    { required: true, message: '请填写内容', trigger: 'blur' }
-                ]
-            }
-        };
+  data() {
+    return {
+      ruleForm: {
+        name: "",
+        startTime: "",
+        endTime: "",
+        content: "",
+        imageUrl: "",
+        detailForm: []
+      },
+      blankDetailForm: {
+        name: "",
+        content: "",
+        imageUrl: "",
+        videoUrl: ""
+      },
+      rules: {
+        name: [
+          { required: true, message: "请输入活动名称", trigger: "blur" },
+          { min: 3, max: 50, message: "长度在 3 到 50 个字符", trigger: "blur" }
+        ],
+        endTime: [
+          {
+            type: "date",
+            required: true,
+            message: "请选择开始日期",
+            trigger: "change"
+          }
+        ],
+        endTime: [
+          {
+            type: "date",
+            required: true,
+            message: "请选择结束时间",
+            trigger: "change"
+          }
+        ],
+        content: [{ required: true, message: "请填写内容", trigger: "blur" }]
+      }
+    };
+  },
+  methods: {
+    submitForm(formName) {
+      addLiveShowInfo(this.ruleForm).then(response => {
+        this.$notify({
+          title: "成功",
+          message: "添加成功",
+          type: "success",
+          duration: 2000
+        }),
+          this.$router.go(-1);
+      });
     },
-    methods: {
-        submitForm(formName) {
-            addLiveShowInfo(this.ruleForm).then(response => {
-                this.$notify({
-                    title: '成功',
-                    message: '添加成功',
-                    type: 'success',
-                    duration: 2000
-                }),
-                    this.$router.go(-1)
-            })
-        },
-        resetForm(formName) {
-            // this.$router.go({ name: 'tmsActivity'});
-            this.$router.go(0)
+    resetForm(formName) {
+      // this.$router.go({ name: 'tmsActivity'});
+      this.$router.go(0);
+    },
+    addModule() {
+      debugger;
+      let newForm = Object.assign({}, this.blankDetailForm);
 
-        },
-        addModule() {
-            debugger
-            let newForm = Object.assign({}, this.blankDetailForm)
-
-            this.ruleForm.detailForm.push(newForm)
-        },
-        imageUploaded(image) {
-            debugger
-            this.ruleForm.imageUrl = image.url
-        }
+      this.ruleForm.detailForm.push(newForm);
+    },
+    imageUploaded(image) {
+      debugger;
+      this.ruleForm.imageUrl = image.url;
     }
-}
+  }
+};
 </script>
 
 <style>
 .tmsDiv {
-    width: 60%;
-    margin: 40px;
-    text-align: left
+  width: 60%;
+  margin: 40px;
+  text-align: left;
 }
 
 .tmsAddDiv {
-    margin-top: 10px;
-    text-align: right
+  margin-top: 10px;
+  text-align: right;
 }
 
 .tmsDetailDiv {
-    border: 1px dashed #d9d9d9;
-    margin-top: 5px
+  border: 1px dashed #d9d9d9;
+  margin-top: 5px;
 }
 
 .tmsDetailDiv form {
-    margin: 10px
+  margin: 10px;
 }
 
 .sub-navbar {
-    margin-top: 10px;
-    text-align: right;
+  margin-top: 10px;
+  text-align: right;
+  position: fixed;
+  right: 30px;
+  top: 40px;
 }
 </style>

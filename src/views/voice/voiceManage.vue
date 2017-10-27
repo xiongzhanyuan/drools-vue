@@ -182,8 +182,10 @@ export default {
   },
   filters: {
     formatDate(time) {
-      var date = new Date(time);
-      return formatDate(date, 'yyyy-MM-dd hh : mm');
+      if (!!time) {
+        var date = new Date(time);
+        return formatDate(date, "yyyy-MM-dd");
+      }
     }
   },
   methods: {

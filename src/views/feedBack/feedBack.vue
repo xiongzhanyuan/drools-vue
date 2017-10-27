@@ -73,109 +73,121 @@
 
 <style>
 .feed-table {
-    width: 100%;
-    margin-top: 20px
+  width: 100%;
+  margin-top: 20px;
 }
 </style>
 
 
 <script>
-import { getFeedBackList, getFeedBackInfo } from '@/api/feedBack'
-import { formatDate } from '@/utils/date.js';
+import { getFeedBackList, getFeedBackInfo } from "@/api/feedBack";
+import { formatDate } from "@/utils/date.js";
 
 export default {
-    name: 'feedList',
-    data() {
-        return {
-            list: null,
-            total: null,
-            listLoading: true,
-            listQuery: {
-                content: null,
-                type: null,
-                startTime: null,
-                endTime: null,
-                page: {
-                    pageNo: 1,
-                    pageSize: 10
-                }
-            },
-            tableKey: 0,
-            options: [{
-                value: 1,
-                label: '意见'
-            }, {
-                value: 2,
-                label: '投诉'
-            }, {
-                value: 3,
-                label: '好评'
-            }],
-            value: ''
+  name: "feedList",
+  data() {
+    return {
+      list: null,
+      total: null,
+      listLoading: true,
+      listQuery: {
+        content: null,
+        type: null,
+        startTime: null,
+        endTime: null,
+        page: {
+          pageNo: 1,
+          pageSize: 10
         }
-    },
-    created() {
-        this.getList()
-    },
-    filters: {
-        formatDate(time) {
-            var date = new Date(time);
-            return formatDate(date, 'yyyy-MM-dd hh : mm : ss');
+      },
+      tableKey: 0,
+      options: [
+        {
+          value: 1,
+          label: "意见"
+        },
+        {
+          value: 2,
+          label: "投诉"
+        },
+        {
+          value: 3,
+          label: "好评"
         }
-    },
-    methods: {
-        getList() {
-            this.listLoading = true
-            const temp = Object.assign({}, this.listQuery)
-            if (temp.startTime) {
-                temp.startTime = this.listQuery.startTime.getTime()
-            }
-
-            if (temp.endTime) {
-                temp.endTime = this.listQuery.endTime.getTime()
-            }
-            getFeedBackList(temp).then(response => {
-                this.list = response.list
-                this.total = response.totalCount
-                this.listLoading = false
-            })
-        },
-        handleFilter() {
-            this.getList()
-        },
-        handleSizeChange(val) {
-            this.listQuery.page.pageSize = val
-            this.getList()
-        },
-        handleCurrentChange(val) {
-            this.listQuery.page.pageNo = val
-            this.getList()
-        },
-        export2Excel() {
-            require.ensure([], () => {
-                const { export_json_to_excel } = require('../../vendor/Export2Excel');
-                const tHeader = ['序号', '用户昵称', '类型', '内容', '反馈时间'];
-                const filterVal = ['id', 'nickName', 'typeName', 'content', 'createTimeStr'];
-                const list = this.list
-                debugger
-                list.forEach(item => {
-                    if (1 === item.type) {
-                        item.typeName = '意见'
-                    } else if (2 === item.type) {
-                        item.typeName = '投诉'
-                    } else if (3 === item.type) {
-                        item.typeName = '好评'
-                    }
-                    var date = new Date(item.createTime);
-                    item.createTimeStr = formatDate(date, 'yyyy-MM-dd hh : mm : ss');
-                })
-                const data = this.formatJson(filterVal, list);
-                export_json_to_excel(tHeader, data, '列表excel');
-            })
-        },
-        formatJson(filterVal, jsonData) {
-            return jsonData.map(v => filterVal.map(j => v[j]))
-        }
+      ],
+      value: ""
+    };
+  },
+  created() {
+    this.getList();
+  },
+  filters: {
+    formatDate(time) {
+      if (!!time) {
+        var date = new Date(time);
+        return formatDate(date, "yyyy-MM-dd");
+      }
     }
-}
+  },
+  methods: {
+    getList() {
+      this.listLoading = true;
+      const temp = Object.assign({}, this.listQuery);
+      if (temp.startTime) {
+        temp.startTime = this.listQuery.startTime.getTime();
+      }
+
+      if (temp.endTime) {
+        temp.endTime = this.listQuery.endTime.getTime();
+      }
+      getFeedBackList(temp).then(response => {
+        this.list = response.list;
+        this.total = response.totalCount;
+        this.listLoading = false;
+      });
+    },
+    handleFilter() {
+      this.getList();
+    },
+    handleSizeChange(val) {
+      this.listQuery.page.pageSize = val;
+      this.getList();
+    },
+    handleCurrentChange(val) {
+      this.listQuery.page.pageNo = val;
+      this.getList();
+    },
+    export2Excel() {
+      require.ensure([], () => {
+        const { export_json_to_excel } = require("../../vendor/Export2Excel");
+        const tHeader = ["序号", "用户昵称", "类型", "内容", "反馈时间"];
+        const filterVal = [
+          "id",
+          "nickName",
+          "typeName",
+          "content",
+          "createTimeStr"
+        ];
+        const list = this.list;
+        debugger;
+        list.forEach(item => {
+          if (1 === item.type) {
+            item.typeName = "意见";
+          } else if (2 === item.type) {
+            item.typeName = "投诉";
+          } else if (3 === item.type) {
+            item.typeName = "好评";
+          }
+          var date = new Date(item.createTime);
+          item.createTimeStr = formatDate(date, "yyyy-MM-dd hh : mm : ss");
+        });
+        const data = this.formatJson(filterVal, list);
+        export_json_to_excel(tHeader, data, "列表excel");
+      });
+    },
+    formatJson(filterVal, jsonData) {
+      return jsonData.map(v => filterVal.map(j => v[j]));
+    }
+  }
+};
 </script>

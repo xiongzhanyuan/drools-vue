@@ -28,6 +28,10 @@ export default {
   },
   methods: {
     beforeUpload (file) {
+      if(1024000 < file.size){
+          alert("图片大小不能超过1M")
+          return false
+        }
       let key = 'tms/image/' + md5(file.name + new Date().getTime()) + file.name.substr(file.name.lastIndexOf('.'))
       return new Promise((resolve, reject) => {
         getToken().then(response => {

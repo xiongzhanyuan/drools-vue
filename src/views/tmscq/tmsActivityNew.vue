@@ -72,87 +72,90 @@
 
 <script>
 // import Tinymce from '@/components/Tinymce'
-import UploadAll from '@/views/common/uploadAll'
-import MDinput from '@/components/MDinput'
-import Sticky from '@/components/Sticky' // 粘性header组件
-import { fetchLegendActivityList, getLegendActivityInfo, addLegendActivityInfo, updateLegendActivityInfo, deleteLegendActivityInfo } from '@/api/legend'
-
+import UploadAll from "@/views/common/uploadAll";
+import MDinput from "@/components/MDinput";
+import Sticky from "@/components/Sticky"; // 粘性header组件
+import {
+  fetchLegendActivityList,
+  getLegendActivityInfo,
+  addLegendActivityInfo,
+  updateLegendActivityInfo,
+  deleteLegendActivityInfo
+} from "@/api/legend";
 
 export default {
-  name: 'addTmsActivity',
+  name: "addTmsActivity",
   components: { UploadAll, MDinput, Sticky },
   data() {
     const validateRequire = (rule, value, callback) => {
-      debugger
-      if (value === '') {
+      debugger;
+      if (value === "") {
         this.$message({
-          message: rule.field + '为必传项',
-          type: 'error'
-        })
-        return false
+          message: rule.field + "为必传项",
+          type: "error"
+        });
+        return false;
       } else {
-        callback()
+        callback();
       }
-    }
+    };
 
     return {
       postForm: {
-        name: '',
-        startDate: '',
-        endDate: '',
-        content: '',
+        name: "",
+        startDate: "",
+        endDate: "",
+        content: "",
         detailForm: []
       },
       blankDetailForm: {
-        name: '',
-        content: '',
-        imageUrl: '',
-        videoUrl: ''
+        name: "",
+        content: "",
+        imageUrl: "",
+        videoUrl: ""
       },
       loading: false,
       rules: {
         title: [{ validator: validateRequire }]
       }
-    }
+    };
   },
-  computed: {
-
-  },
-  created() {
-
-  },
+  computed: {},
+  created() {},
   methods: {
     addModule() {
-      this.postForm.detailForm.push(this.blankDetailForm)
+      this.postForm.detailForm.push(this.blankDetailForm);
     },
     fetchData() {
-      fetchArticle().then(response => {
-        this.postForm = response.data
-      }).catch(err => {
-        this.fetchSuccess = false
-        console.log(err)
-      })
+      fetchArticle()
+        .then(response => {
+          this.postForm = response.data;
+        })
+        .catch(err => {
+          this.fetchSuccess = false;
+          console.log(err);
+        });
     },
     submitForm() {
       this.$refs.postForm.validate(valid => {
         if (valid) {
           addLegendActivityInfo(this.postForm).then(response => {
             this.$notify({
-              title: '成功',
-              message: '添加成功',
-              type: 'success',
+              title: "成功",
+              message: "添加成功",
+              type: "success",
               duration: 2000
             }),
-              this.$router.go(-1)
-          })
+              this.$router.go(-1);
+          });
         } else {
-          console.log('error submit!!')
-          return false
+          console.log("error submit!!");
+          return false;
         }
-      })
+      });
     }
   }
-}
+};
 </script>
 
 <style rel="stylesheet/scss" lang="scss" scoped>
@@ -198,6 +201,9 @@ export default {
   .sub-navbar {
     margin-top: 10px;
     text-align: right;
+    position: fixed;
+    right: 30px;
+    top: 40px;
   }
 }
 </style>
