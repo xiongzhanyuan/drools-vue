@@ -93,6 +93,10 @@
           </el-select>
         </el-form-item>
 
+        <el-form-item label="排序" prop="sort">
+          <el-input v-model="temp.sort"></el-input>
+        </el-form-item>
+
         <el-form-item label="景观区介绍" prop="content">
           <el-input type="textarea" :autosize="{ minRows: 3, maxRows: 5}" v-model="temp.content" placeholder="请输入内容"></el-input>
         </el-form-item>
@@ -166,6 +170,7 @@ export default {
         level: '',
         parentId: '',
         content: '',
+        sort: '',
         imageUrls: [],
         videoUrls: [],
         audioUrls: []
