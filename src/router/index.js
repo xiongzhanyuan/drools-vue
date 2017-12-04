@@ -66,6 +66,10 @@ const WonderfulOrgList = _import('wonderful/wonderfulOrgList')
 /* mapManage */
 const MapManage = _import('map/mapManage')
 
+const RuleDetail = _import('rule/ruleDetail')
+
+const ColumnList = _import('rule/columnList')
+
 
 Vue.use(Router)
 
@@ -109,174 +113,174 @@ export default new Router({
 
 export const asyncRouterMap = [
 
-  {
-    path: '/homePage',
-    component: Layout,
-    redirect: '/homePage/index',
-    icon: 'tubiao',
-    noDropdown: true,
-    children: [{
-      path: 'homePage',
-      name: '首页管理',
-      component: HomePage
-    }]
-  },
+  // {
+  //   path: '/homePage',
+  //   component: Layout,
+  //   redirect: '/homePage/index',
+  //   icon: 'tubiao',
+  //   noDropdown: true,
+  //   children: [{
+  //     path: 'homePage',
+  //     name: '首页管理',
+  //     component: HomePage
+  //   }]
+  // },
 
-  {
-    path: '/scenicSpot',
-    component: Layout,
-    redirect: '/scenicSpot/index',
-    icon: 'tab',
-    noDropdown: true,
-    children: [{
-      path: 'scenicSpot',
-      name: '景观区管理',
-      component: ScenicSpot
-    }]
-  },
-  {
-    path: '/map',
-    component: Layout,
-    redirect: '/map/index',
-    icon: 'yanjing',
-    noDropdown: true,
-    children: [{
-      path: 'mapManage',
-      name: '手绘地图',
-      component: MapManage
-    }]
-  },
+  // {
+  //   path: '/scenicSpot',
+  //   component: Layout,
+  //   redirect: '/scenicSpot/index',
+  //   icon: 'tab',
+  //   noDropdown: true,
+  //   children: [{
+  //     path: 'scenicSpot',
+  //     name: '景观区管理',
+  //     component: ScenicSpot
+  //   }]
+  // },
+  // {
+  //   path: '/map',
+  //   component: Layout,
+  //   redirect: '/map/index',
+  //   icon: 'yanjing',
+  //   noDropdown: true,
+  //   children: [{
+  //     path: 'mapManage',
+  //     name: '手绘地图',
+  //     component: MapManage
+  //   }]
+  // },
 
-  {
-    path: '/tms',
-    component: Layout,
-    redirect: 'noredirect',
-    name: '天门山传奇',
-    icon: 'table',
-    children: [{
-        path: 'tmsContent',
-        component: TmsContent,
-        name: '天门山介绍',
-        icon: 'zonghe'
-      },
-      {
-        path: 'tmsActivityList',
-        component: TmsActivityList,
-        name: '天门山活动',
-        icon: 'zonghe'
-      },
-      {
-        path: 'tmsActivity',
-        component: TmsActivity,
-        hidden: true
-      },
-      {
-        path: 'tmsActivityEdit/:id',
-        component: TmsActivityEdit,
-        hidden: true
-      },
-      {
-        path: 'minJianChuanShuoList',
-        component: MinJianChuanShuoList,
-        name: '民间传说',
-        icon: 'zonghe'
-      },
-      {
-        path: 'minJianChuanShuoInsert',
-        component: MinJianChuanShuoInsert,
-        hidden: true
-      },
-      {
-        path: 'minJianChuanShuoEdit/:id',
-        component: MinJianChuanShuoEdit,
-        hidden: true
-      }
-    ]
-  },
+  // {
+  //   path: '/tms',
+  //   component: Layout,
+  //   redirect: 'noredirect',
+  //   name: '天门山传奇',
+  //   icon: 'table',
+  //   children: [{
+  //       path: 'tmsContent',
+  //       component: TmsContent,
+  //       name: '天门山介绍',
+  //       icon: 'zonghe'
+  //     },
+  //     {
+  //       path: 'tmsActivityList',
+  //       component: TmsActivityList,
+  //       name: '天门山活动',
+  //       icon: 'zonghe'
+  //     },
+  //     {
+  //       path: 'tmsActivity',
+  //       component: TmsActivity,
+  //       hidden: true
+  //     },
+  //     {
+  //       path: 'tmsActivityEdit/:id',
+  //       component: TmsActivityEdit,
+  //       hidden: true
+  //     },
+  //     {
+  //       path: 'minJianChuanShuoList',
+  //       component: MinJianChuanShuoList,
+  //       name: '民间传说',
+  //       icon: 'zonghe'
+  //     },
+  //     {
+  //       path: 'minJianChuanShuoInsert',
+  //       component: MinJianChuanShuoInsert,
+  //       hidden: true
+  //     },
+  //     {
+  //       path: 'minJianChuanShuoEdit/:id',
+  //       component: MinJianChuanShuoEdit,
+  //       hidden: true
+  //     }
+  //   ]
+  // },
 
-  {
-    path: '/live',
-    component: Layout,
-    redirect: '/live/index',
-    icon: 'mima',
-    noDropdown: true,
-    children: [{
-        path: 'liveShowList',
-        name: '实景演出',
-        component: LiveShowList
-      },
-      {
-        path: 'liveShowInsert',
-        component: LiveShowInsert,
-        hidden: true
-      },
-      {
-        path: 'liveShowEdit/:id',
-        component: LiveShowEdit,
-        hidden: true
-      }
-    ]
-  },
+  // {
+  //   path: '/live',
+  //   component: Layout,
+  //   redirect: '/live/index',
+  //   icon: 'mima',
+  //   noDropdown: true,
+  //   children: [{
+  //       path: 'liveShowList',
+  //       name: '实景演出',
+  //       component: LiveShowList
+  //     },
+  //     {
+  //       path: 'liveShowInsert',
+  //       component: LiveShowInsert,
+  //       hidden: true
+  //     },
+  //     {
+  //       path: 'liveShowEdit/:id',
+  //       component: LiveShowEdit,
+  //       hidden: true
+  //     }
+  //   ]
+  // },
 
-  {
-    path: '/voice',
-    component: Layout,
-    redirect: '/voice/index',
-    icon: 'tuozhuai',
-    noDropdown: true,
-    children: [{
-      path: 'voiceManage',
-      name: '语音维护',
-      component: VoiceManage
-    }]
-  },
+  // {
+  //   path: '/voice',
+  //   component: Layout,
+  //   redirect: '/voice/index',
+  //   icon: 'tuozhuai',
+  //   noDropdown: true,
+  //   children: [{
+  //     path: 'voiceManage',
+  //     name: '语音维护',
+  //     component: VoiceManage
+  //   }]
+  // },
 
-  {
-    path: '/wonderful',
-    component: Layout,
-    redirect: 'wonderful',
-    name: '精彩风景',
-    icon: 'icons',
-    children: [{
-        path: 'wonderfulUserList',
-        component: WonderfulUserList,
-        name: '用户上传审批',
-        icon: 'zonghe'
-      },
-      {
-        path: 'wonderfulOrgList',
-        component: WonderfulOrgList,
-        name: '宣传片维护',
-        icon: 'zonghe'
-      }
-    ]
-  },
+  // {
+  //   path: '/wonderful',
+  //   component: Layout,
+  //   redirect: 'wonderful',
+  //   name: '精彩风景',
+  //   icon: 'icons',
+  //   children: [{
+  //       path: 'wonderfulUserList',
+  //       component: WonderfulUserList,
+  //       name: '用户上传审批',
+  //       icon: 'zonghe'
+  //     },
+  //     {
+  //       path: 'wonderfulOrgList',
+  //       component: WonderfulOrgList,
+  //       name: '宣传片维护',
+  //       icon: 'zonghe'
+  //     }
+  //   ]
+  // },
 
 
-  {
-    path: '/feedBack',
-    component: Layout,
-    redirect: '/feedBack/index',
-    icon: 'mima',
-    noDropdown: true,
-    children: [{
-      path: 'feedBack',
-      name: '用户反馈',
-      component: FeedBack
-    }]
-  },
-  {
-    path: '/customNotice',
-    component: Layout,
-    redirect: '/customNotice/index',
-    icon: 'theme',
-    noDropdown: true,
-    children: [{
-      path: 'customNotice',
-      name: '游客须知',
-      component: CustomNotice
-    }]
-  },
+  // {
+  //   path: '/feedBack',
+  //   component: Layout,
+  //   redirect: '/feedBack/index',
+  //   icon: 'mima',
+  //   noDropdown: true,
+  //   children: [{
+  //     path: 'feedBack',
+  //     name: '用户反馈',
+  //     component: FeedBack
+  //   }]
+  // },
+  // {
+  //   path: '/customNotice',
+  //   component: Layout,
+  //   redirect: '/customNotice/index',
+  //   icon: 'theme',
+  //   noDropdown: true,
+  //   children: [{
+  //     path: 'customNotice',
+  //     name: '游客须知',
+  //     component: CustomNotice
+  //   }]
+  // },
 
   {
     path: '/system',
@@ -288,6 +292,30 @@ export const asyncRouterMap = [
       path: 'userList',
       component: UserList,
       name: '用户管理',
+      icon: 'zonghe'
+    },{
+      path: 'columnList',
+      component: ColumnList,
+      name: '规则字段管理',
+      icon: 'zonghe'
+    }]
+  },
+  {
+    path: '/rules',
+    component: Layout,
+    redirect: 'noredirect',
+    name: '规则管理',
+    icon: 'theme',
+    children: [{
+      path: 'ruleDetail',
+      component: RuleDetail,
+      name: '拒件规则',
+      icon: 'zonghe'
+    }, 
+    {
+      path: 'ruleDetail',
+      component: RuleDetail,
+      name: '打回规则',
       icon: 'zonghe'
     }]
   },

@@ -1,0 +1,38 @@
+<!doctype html>
+<html>
+
+<head>
+  <meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  
+</head>
+
+<body>
+  <script>
+    function setupWebViewJavascriptBridge(callback) {
+      if (window.WebViewJavascriptBridge) { return callback(WebViewJavascriptBridge); }
+      if (window.WVJBCallbacks) { return window.WVJBCallbacks.push(callback); }
+      window.WVJBCallbacks = [callback];
+      var WVJBIframe = document.createElement('iframe');
+      WVJBIframe.style.display = 'none';
+      WVJBIframe.src = 'https://__bridge_loaded__';
+      document.documentElement.appendChild(WVJBIframe);
+      setTimeout(function() { document.documentElement.removeChild(WVJBIframe) }, 0)
+  }
+
+  setupWebViewJavascriptBridge(function(bridge) {
+      document.getElementById('button').onclick = function(e) {
+          e.preventDefault()                                 
+          bridge.callHandler('scanQR_AI', {}, function(response) {
+               //处理oc过来的回调
+              //  alert('收到oc过来的回调:'+response)
+               document.getElementById('divTest').innerHTML = "response" + response;
+          })
+      }
+  })
+
+  </script>
+  <button id="button">ocbutton</button>
+  <div id="divTest">response:</div>
+</body>
+
+</html>
