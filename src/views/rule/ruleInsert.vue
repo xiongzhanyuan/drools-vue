@@ -2,7 +2,7 @@
     <div style="background:#F4E2C9;height:100%;width:100%;"> 
         <div class="sub-navbar">
             <div>
-                <el-button style="margin-left: 10px;" type="success" @click="submitForm()">发布规则
+                <el-button style="margin-left: 10px;" type="success" @click="release()">发布规则
                 </el-button>
                 <el-button type="warning" @click="addModule()">添加规则模板</el-button>
                 <el-button  @click="buildCode()">生成规则代码(开发人员使用)</el-button>
@@ -11,8 +11,7 @@
         <el-row>
         <div style="width: 60%; float: left; margin-top: 30px">
             <div class='condition-list' v-for="(item, index) in ruleForm" :key="item + ''">
-                <h3>规则 {{index + 1}}<i @click="deleteRule(index)" class="iconfont icon-guanbi" style="position: relative; right: -15px"></i></h3>
-                
+                <h3>规则 {{index + 1}}</h3>
                 <draggable element="ul" v-model="ruleForm[index]" :options="dragOptions" :move="onMove" @start="isDragging=true" @end="isDragging=false"> 
                     <transition-group :name="'flip-list'" class="rule-class" type="transition" tag="ul">
                         <li class="list-group-item" v-for="element in item" :key="element.name"> 
@@ -77,6 +76,26 @@
             </div>
         </div>
         </el-row>
+
+
+        <el-dialog title="确认" :visible.sync="dialogFormVisible" :before-close="handleClose">
+          <el-form class="small-space" :model="temp" ref="temp" label-position="left" label-width="160px" style='width: 400px; margin-left:50px;'>
+
+            <el-form-item label="规则名称">
+              <el-input v-model="temp.name"></el-input>
+            </el-form-item>
+
+            <el-form-item label="规则编码（英文唯一）">
+              <el-input v-model="temp.code"></el-input>
+            </el-form-item>
+          </el-form>
+          <div slot="footer" class="dialog-footer">
+            <el-button @click="cancel('temp')">取 消</el-button>
+            <el-button type="primary" @click="submitForm()">确定</el-button>
+          </div>
+        </el-dialog>
+
+
     </div>
             
 </template>
@@ -85,12 +104,7 @@
 <script>
 import UploadAll from "@/views/common/uploadAll";
 import draggable from "vuedraggable";
-import {
-  reloadRule,
-  selectConditionList,
-  selectResultList,
-  getRuleInfo
-} from "@/api/rule";
+import { reloadRule, selectConditionList, selectResultList, addRule, updateRule } from "@/api/rule";
 
 export default {
   name: "hello",
@@ -104,7 +118,7 @@ export default {
       resultShow: true,
       ruleForm: [],
       ruleList: [],
-      inputStr: "",
+      inputStr:'',
       inputValueOptions: [],
       editable: true,
       isDragging: false,
@@ -115,7 +129,7 @@ export default {
         {
           type: "sign",
           name: ">",
-          data: ">"
+          data:">"
         },
         {
           type: "sign",
@@ -168,12 +182,13 @@ export default {
           data: "not contains"
         }
       ],
+      dialogFormVisible: false,
       temp: {
-        name: "",
-        code: "",
-        rule: "",
-        content: ""
-      }
+        name: '',
+        code: '',
+        rule: '',
+        content: ''
+      },
     };
   },
   computed: {
@@ -187,26 +202,33 @@ export default {
     }
   },
   methods: {
-    deleteRule(index) {
-      debugger
-      this.ruleForm = this.ruleForm.filter(e => e != this.ruleForm[index])
+    handleClose() {
+      this.resetForm('temp')
+      this.dialogFormVisible = false
+    },
+    resetForm(formName) {
+      this.$refs[formName].resetFields();
+    },
+    cancel(formName) {
+      this.resetForm(formName)
+      this.dialogFormVisible = false
+    },
+    handleClose() {
+      this.resetForm('temp')
+      this.dialogFormVisible = false
     },
     showConditionList() {
-      this.conditionShow = !this.conditionShow;
+      this.conditionShow = !this.conditionShow
     },
     showSignList() {
-      this.signShow = !this.signShow;
-    },
+      this.signShow = !this.signShow
+    }, 
     showResultList() {
-      this.resultShow = !this.resultShow;
+      this.resultShow = !this.resultShow
     },
-    changeInputStr() {
-      debugger;
-      this.inputValueOptions.push({
-        type: "value",
-        name: this.inputStr,
-        data: this.inputStr
-      });
+    changeInputStr() { 
+      debugger
+      this.inputValueOptions.push({type: "value", name: this.inputStr, data: this.inputStr})
     },
     onMove({ relatedContext, draggedContext }) {
       const relatedElement = relatedContext.element;
@@ -220,35 +242,35 @@ export default {
       this.ruleForm.push(this.ruleList);
     },
     buildCode() {
-      var rules = "";
+      var rules = '';
       this.ruleForm.forEach((element, index) => {
-        debugger;
+        debugger
         rules = rules + " rule ruleName" + index;
         rules = rules + " when $map: ";
         var condition = element.slice(0, element.length - 1);
         var result = element.slice(element.length - 1, element.length);
         condition.forEach((conditionElement, conditionIndex) => {
           if (conditionIndex % 3 == 0) {
-            rules = rules + " Map(get(" + conditionElement.data + ") ";
+            rules = rules + " Map(get(" + conditionElement.data + ") "
           } else {
-            rules = rules + " " + conditionElement.data;
+            rules = rules + " " + conditionElement.data
           }
-        });
-        rules = rules + " checkResult : CheckResult(); ";
-        rules =
-          rules + " then checkResult.setResultStr(" + result[0].data + "); ";
+        })
+        rules = rules + " checkResult : CheckResult(); "
+        rules = rules + " then checkResult.setResultStr(" + result[0].data + "); "
       });
 
-      rules =
-        "package drools.rules import java.util.Map import com.mrd.drools.business.fact.CheckResult " +
-        rules;
-
-      debugger;
+      rules = "package drools.rules import java.util.Map import com.mrd.drools.business.fact.CheckResult " + rules
+      
+      debugger
+    },
+    release() {
+      this.dialogFormVisible = true
     },
     submitForm() {
-      var rules = "";
+      var rules = '';
       this.ruleForm.forEach((element, index) => {
-        debugger;
+        debugger
         rules = rules + " rule ruleName" + index;
         rules = rules + " agenda-group \"" + this.temp.code +"\" ";
         rules = rules + " when $map: ";
@@ -256,55 +278,49 @@ export default {
         var result = element.slice(element.length - 1, element.length);
         condition.forEach((conditionElement, conditionIndex) => {
           if (conditionElement.type == "condition") {
-            rules = rules + ' Map(get("' + conditionElement.data + '") ';
-          } else if (conditionElement.type == "sign") {
-            rules = rules + " " + conditionElement.data;
+            rules = rules + " Map(get(\"" + conditionElement.data + "\") "
+          } else if (conditionElement.type == "sign"){
+            rules = rules + " " + conditionElement.data
           } else if (conditionElement.type == "value") {
-            rules = rules + ' "' + conditionElement.data + '")';
+            rules = rules + " \"" + conditionElement.data + "\")"
           }
-        });
-        rules = rules + " checkResult : CheckResult(); ";
-        rules = rules + ' then checkResult.setResultStr("' + result[0].data + '"); ';
+        })
+        rules = rules + " checkResult : CheckResult(); "
+        rules = rules + " then checkResult.setResultStr(\"" + result[0].data + "\"); "
         rules = rules + " checkResult.getResultList().add(drools.getRule().getName()); "
-        rules = rules + " end; ";
+        rules = rules + " end; "
       });
 
-      rules =
-        "package drools.rules import java.util.Map import com.mrd.drools.business.fact.CheckResult " +
-        rules;
-
-      debugger;
-      this.temp.content = JSON.stringify(this.ruleForm);
-      this.temp.rule = rules;
+      rules = "package drools.rules import java.util.Map import com.mrd.drools.business.fact.CheckResult " + rules
+      this.temp.rule = rules
+      this.temp.content = JSON.stringify(this.ruleForm)
+      debugger
       reloadRule(this.temp).then(response => {
+        debugger
+        this.resetForm('temp')
+        this.dialogFormVisible = false
         this.$notify({
           title: "成功",
           message: "重载规则成功",
           type: "success",
           duration: 2000
-        });
+        })
+        this.$router.push({path:'/rules/ruleList'})
       });
-      this.$router.push({ path: "/rules/ruleList" });
-    }
+    },
   },
   created() {
     selectConditionList({}).then(response => {
       this.conditionOptions = response.list;
       this.conditionOptions.forEach(element => {
-        element.type = "condition";
-      });
+        element.type = "condition"
+      })
     });
     selectResultList({}).then(response => {
       this.resultOptions = response.list;
       this.resultOptions.forEach(element => {
-        element.type = "result";
-      });
-    });
-    const id = this.$route.params.id;
-    getRuleInfo({ id: id }).then(response => {
-      this.ruleForm = response.contentJson;
-      this.temp = response;
-      debugger;
+        element.type = "result"
+      })
     });
   },
   watch: {
@@ -360,12 +376,12 @@ export default {
   line-height: 30px;
 }
 .rule-class {
-  // padding: 20px 0;
-  // max-width: 360px;
-  // background-color: #fff;
-  // height: 100px;
-  min-height: 100px;
-  display: flow-root;
+      // padding: 20px 0;
+    // max-width: 360px;
+    // background-color: #fff;
+    // height: 100px;
+    min-height: 100px;
+    display: flow-root;
 }
 .component-list {
   background: #fff;
@@ -384,6 +400,7 @@ export default {
   }
   li {
     list-style: none;
+    
   }
 }
 
@@ -391,7 +408,7 @@ export default {
   background: #fff;
   list-style: none;
   line-height: 1.5;
-  margin-bottom: 30px;
+
   h3 {
     padding: 3px 10px;
     color: #fff;
@@ -407,19 +424,8 @@ export default {
     margin: 8px 20px 10px 0;
     padding: 5px 10px;
     min-width: 10px;
-    background-color: #5f9edf;
+    background-color: #5F9EDF;
     text-align: center;
-  }
-  .mrd-check:after {
-    content: "\2715";
-    position: absolute;
-    top: -10px;
-    left: 95px;
-    color: #5f9edf;
-    text-align: center;
-    font-size: 0.6em;
-    padding: 1px 0 0 0;
-    vertical-align: text-top;
   }
 }
 </style>

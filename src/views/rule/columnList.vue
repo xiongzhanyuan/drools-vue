@@ -22,9 +22,16 @@
         </template>
       </el-table-column>
 
-      <el-table-column min-width="150px" label="column">
+      <el-table-column min-width="150px" label="data">
         <template scope="scope">
-          <span>{{scope.row.tdColumn}}</span>
+          <span>{{scope.row.data}}</span>
+        </template>
+      </el-table-column>
+
+      <el-table-column min-width="150px" label="类型">
+        <template scope="scope">
+          <span v-if="scope.row.type == 1">条件</span>
+          <span v-else>结果</span>
         </template>
       </el-table-column>
 
@@ -41,10 +48,10 @@
           <el-button size="small" type="success" @click="getInfo(scope.row)">修改
           </el-button>
 
-          <el-button size="small" type="primary" @click="messageBoxUp(scope.row)">上线
+          <el-button size="small" type="primary" @click="onLine(scope.row)">上线
           </el-button>
 
-          <el-button size="small" type="danger" @click="messageBox(scope.row)">下线
+          <el-button size="small" type="danger" @click="offLine(scope.row)">下线
           </el-button>
         </template>
       </el-table-column>
@@ -64,8 +71,14 @@
           <el-input v-model="temp.name"></el-input>
         </el-form-item>
 
-        <el-form-item label="tdColumn">
-          <el-input v-model="temp.tdColumn"></el-input>
+        <el-form-item label="data">
+          <el-input v-model="temp.data"></el-input>
+        </el-form-item>
+        <el-form-item label="类型" prop="type">
+          <el-select v-model="temp.type" placeholder="请选择">
+            <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
+            </el-option>
+          </el-select>
         </el-form-item>
 
       </el-form>
@@ -85,7 +98,7 @@
 
 
 <script>
-import { selectColumnList, addColumn } from '@/api/rule'
+import { selectColumnList, addColumn, updateColumn, onLineColumn, offLineColumn } from '@/api/rule'
 import store from '@/store'
 
 export default {
@@ -100,15 +113,13 @@ export default {
         page: {
           pageNo: 1,
           pageSize: 10
-        },
-        importance: undefined,
-        title: undefined,
-        type: undefined,
+        }
       },
       temp: {
         id: undefined,
         name: '',
-        tdColumn: '',
+        data: '',
+        type: '',
         status: 'published'
       },
       tableKey: 0,
@@ -118,6 +129,13 @@ export default {
         update: '编辑',
         create: '创建'
       },
+      options: [{
+          value: 1,
+          label: '条件'
+        }, {
+          value: 2,
+          label: '结果'
+        },]
     }
   },
   created() {
@@ -145,6 +163,7 @@ export default {
     },
     getInfo(row) {
       this.temp = Object.assign(this.temp, row)
+      debugger
       this.dialogStatus = 'update'
       this.dialogFormVisible = true
     },
@@ -164,10 +183,8 @@ export default {
       this.dialogStatus = 'create'
       this.dialogFormVisible = true
     },
-    imageUploaded (image) {
-      this.temp.avatar = image.url
-    },
     create() {
+      debugger
       addColumn(this.temp).then(response => {
         this.resetForm('temp')
         this.getList()
@@ -182,7 +199,7 @@ export default {
     },
     update() {
 
-      updateUserInfo(this.temp).then(response => {
+      updateColumn(this.temp).then(response => {
         this.resetForm('temp')
         this.getList()
         this.dialogFormVisible = false
@@ -198,46 +215,51 @@ export default {
     resetTemp() {
       this.temp = {
         id: undefined,
-        userName: '',
-        password: '',
-        checkPass: '',
-        realName: '',
-        sex: 1,
-        avatar: '',
-        idCard: '',
-        department: '',
+        name: '',
+        data: '',
+        type: '',
         status: 'published'
       }
     },
-    messageBox(row) {
-        this.$confirm('此操作将永久删除该用户, 是否继续?', '提示', {
+    onLine(row) {
+        this.$confirm('是否上线该规则?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-          deleteUserInfo({"id": row.id, "flagDelete": 1}).then(response => {
+          onLineColumn({"id": row.id, "flagDelete": 0}).then(response => {
           this.$message({
               type: 'success',
-              message: '删除成功!'
+              message: '上线成功!'
             });
           this.getList()
           })
         }).catch(() => {
           this.$message({
             type: 'info',
-            message: '已取消删除'
+            message: '已取消上线'
           });          
         });
       },
-      test(var1, var2) {
-        var b = true;
-        var str = var2.split("*");
-        str.forEach((v,i) => {
-            if (v !== "" && var1.search(v) != var2.search(v)) {
-                b = false;
-                alert(b);
-            }
-        })
+    offLine(row) {
+        this.$confirm('是否下线该规则?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          offLineColumn({"id": row.id, "flagDelete": 1}).then(response => {
+          this.$message({
+              type: 'success',
+              message: '下线成功!'
+            });
+          this.getList()
+          })
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消下线'
+          });          
+        });
       }
   }
 }
