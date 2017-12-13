@@ -37,7 +37,7 @@ const RuleInsert = _import('rule/ruleInsert')
 
 const ColumnList = _import('rule/columnList')
 
-const RuleList = _import('rule/ruleList')
+const RuleList = _import('rule/flowChart')
 
 
 
